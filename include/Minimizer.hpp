@@ -1,0 +1,35 @@
+#ifndef MIN_H
+#define MIN_H
+
+#include <vector>
+#include "Math/Functor.h"
+#include <Minuit2/Minuit2Minimizer.h>
+
+using namespace std;
+
+class Minimizer{
+  
+friend ostream& operator<<(ostream& output, const Minimizer& min);  
+  
+  ROOT::Math::Functor f;//functor to Minimize
+  ROOT::Minuit2::Minuit2Minimizer minuit;//underlying Minuit2 Root Minimizer
+  vector<double> step;
+  vector<double> variable;
+  vector<double> sol;//found solution
+  vector<double> err;//errors on the solution
+  double minVal;//value of f at 'sol'
+  void SetDefaultValues();
+  void SetMaths();//set f as the function and set the minuit2 variables to variable
+
+public:
+  Minimizer();
+  Minimizer(ROOT::Math::Functor f);
+  void Process();
+  void Update(ROOT::Math::Functor f);
+  const vector<double>& GetSol() const;
+  const vector<double>& GetErrors() const;
+  const double& GetMinVal() const;
+
+};
+
+#endif

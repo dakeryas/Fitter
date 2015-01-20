@@ -1,0 +1,6 @@
+# Fitter
+The Fitter aims at doing a sensitivity study to the 8He fraction in the data. It assumes various possible values for the 8He fraction and tries to fit fake data built from the Monte Carlo spectra given in the "ToFit" directory, with the same spectra in order to retrieve the fit error.
+
+A sensitivity plot in saved in the form of a ROOT file. The results from the fit to actual data are also displayed in a terminal. All spectra are rebinned to the same common binning.
+
+The Data class is badly implemented and intended for personal use only. The Minimizer class uses an underlying TMinuit2 ROOT object.
