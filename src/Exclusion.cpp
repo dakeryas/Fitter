@@ -12,9 +12,9 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
   Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
 
   TimeEstimator timeEstimator;//defaults to a 1.01 dataFactor
-  double time[heFraction.getFlooredRange()];
+  double time[heFraction.getNumberOfSteps()];
 
-  for(unsigned k = 0; k<heFraction.getFlooredRange(); ++k){
+  for(unsigned k = 0; k<heFraction.getNumberOfSteps(); ++k){
     
     fractions(0) = heFraction.getValue(k);
     fractions(1) = 1 - fractions(0);
@@ -26,7 +26,7 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
 
   }
   
-  graph = TGraph(heFraction.getFlooredRange(), time, heFraction.getDataBins());
+  graph = TGraph(heFraction.getNumberOfSteps(), time, heFraction.getDataBins());
   
 }
 

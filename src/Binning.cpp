@@ -2,8 +2,8 @@
 
 std::ostream& operator<<(std::ostream& output, const Binning& binning){
 
-  output<<"Steps per percent: "<<binning.getNumberOfStepsPerPercent()
-    <<"\n Min percent: "<<binning.getMinPercent()<<"\t Max percent : "<<binning.getMaxPercent()<<"\n";
+  output<<"Steps per percent: "<<binning.getNumberOfStepsPerPercent()<<"\t Total number of steps: "<<binning.getNumberOfSteps()
+    <<"\nMin percent: "<<binning.getMinPercent()<<"\t Max percent : "<<binning.getMaxPercent()<<"\n";
   return output;
   
 }
