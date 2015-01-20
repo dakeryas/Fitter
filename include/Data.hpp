@@ -50,12 +50,12 @@ public:
   Data(const path& search_path, const string& file_sorter);//fills any root file whose name matches the string sorter
   Data(const Data& other);
   const Data& operator=(const Data& other);
-  const vector<path>& GetFilePaths() const;
-  const vector<Hist>& GetHistograms() const;
-  const vector<TH1D> GetTH1DCopies() const;
-  const vector<MatrixXd>& GetMatrices() const;
-  TMatrixD GetRootMatrixCopy(unsigned i) const;
-  unsigned GetSize() const;//returns the largest size of the vectors in Data
+  const vector<path>& getFilePaths() const;
+  const vector<Hist>& getHistograms() const;
+  const vector<TH1D> getTH1DCopies() const;
+  const vector<MatrixXd>& getMatrices() const;
+  TMatrixD getRootMatrixCopy(unsigned i) const;
+  unsigned getSize() const;//returns the largest size of the vectors in Data
 
 };
 

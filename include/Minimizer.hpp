@@ -8,9 +8,7 @@
 using namespace std;
 
 class Minimizer{
-  
-friend ostream& operator<<(ostream& output, const Minimizer& min);  
-  
+ 
   ROOT::Math::Functor f;//functor to Minimize
   ROOT::Minuit2::Minuit2Minimizer minuit;//underlying Minuit2 Root Minimizer
   vector<double> step;
@@ -26,10 +24,12 @@ public:
   Minimizer(ROOT::Math::Functor f);
   void Process();
   void Update(ROOT::Math::Functor f);
-  const vector<double>& GetSol() const;
-  const vector<double>& GetErrors() const;
-  const double& GetMinVal() const;
+  const vector<double>& getSol() const;
+  const vector<double>& getErrors() const;
+  const double& getMinVal() const;
 
 };
+
+ostream& operator<<(ostream& output, const Minimizer& min);  
 
 #endif

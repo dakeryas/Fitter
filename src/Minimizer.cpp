@@ -3,8 +3,8 @@
 ostream& operator<<(ostream& output, const Minimizer& min){
 
   output<<"Solution:\n";
-  for(unsigned k = 0; k<min.f.NDim(); ++k) output<<min.sol[k]<<" +/ "<<min.err[k]<<"\n";
-  output<<"Value at solution:\n"<<min.GetMinVal()<<"\n";
+  for(unsigned k = 0; k<min.getSol().size(); ++k) output<<min.getSol().at(k)<<" +/ "<<min.getErrors().at(k)<<"\n";
+  output<<"Value at solution:\n"<<min.getMinVal()<<"\n";
   return output;
   
 }
@@ -52,19 +52,19 @@ void Minimizer::Update(ROOT::Math::Functor f){
 }
 
 
-const vector<double>& Minimizer::GetSol() const{
+const vector<double>& Minimizer::getSol() const{
 
   return sol;
   
 }
 
-const vector<double>& Minimizer::GetErrors() const{
+const vector<double>& Minimizer::getErrors() const{
 
   return err;
   
 }
 
-const double& Minimizer::GetMinVal() const{
+const double& Minimizer::getMinVal() const{
 
   return minVal;
   

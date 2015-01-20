@@ -3,14 +3,14 @@
 ostream& operator<<(ostream& output, const Data& data){
   
   output<<"Histograms:\n";
-  for(const TH1D& Hist : data.GetHistograms()) output<<Hist.GetName()<<"\n";
-  if(! data.GetMatrices().empty()){
+  for(const TH1D& Hist : data.getHistograms()) output<<Hist.GetName()<<"\n";
+  if(! data.getMatrices().empty()){
     
     output<<"And matrices:\n";
-    for(const MatrixXd& m : data.GetMatrices()) output<<m<<"\n";
+    for(const MatrixXd& m : data.getMatrices()) output<<m<<"\n";
   }
   output<<"From files:\n";
-  for(const path& filep : data.GetFilePaths()) output<<filep<<"\n";
+  for(const path& filep : data.getFilePaths()) output<<filep<<"\n";
   return output;  
   
 }
@@ -188,31 +188,31 @@ void Data::StoreData(){ //store all TH1D Histograms of all files into the vector
   
 }
 
-const vector<path>& Data::GetFilePaths() const{
+const vector<path>& Data::getFilePaths() const{
 
   return filepaths;
   
 }
 
-const vector<Hist>& Data::GetHistograms() const{
+const vector<Hist>& Data::getHistograms() const{
   
   return h;
   
 }
 
-const vector<TH1D> Data::GetTH1DCopies() const{
+const vector<TH1D> Data::getTH1DCopies() const{
   
   return vector<TH1D>(h.begin(),h.end());
   
 }
 
-const vector<MatrixXd>& Data::GetMatrices() const{
+const vector<MatrixXd>& Data::getMatrices() const{
   
   return matrices;
   
 }
 
-TMatrixD Data::GetRootMatrixCopy(unsigned i) const{
+TMatrixD Data::getRootMatrixCopy(unsigned i) const{
   
   auto itMat = matrices.begin()+i;
   if(itMat != matrices.end()) return TMatrixD (itMat->rows(), itMat->cols(), itMat->data());
@@ -220,7 +220,7 @@ TMatrixD Data::GetRootMatrixCopy(unsigned i) const{
   
 }
 
-unsigned int Data::GetSize() const{
+unsigned int Data::getSize() const{
 
   return max({h.size(), matrices.size()});
   

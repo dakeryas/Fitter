@@ -11,8 +11,8 @@ class Chi{
   VectorXd dataErrors;
   MatrixXd simulations;//each column stands for a spectrum (each to be weighted by the corresponding fraction)
   vector<MatrixXd> covariances;//covariances associated to the simulations, the sizes must match
-  static int GetMaxNbins(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);
-  void FillErrors(const TH1D& dataToFit);//fill dataErrors from the TH1D:GetBinError method
+  static int getMaxNbins(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);
+  void FillErrors(const TH1D& dataToFit);//fill dataErrors from the TH1D:getBinError method
   void FillSim(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);//fills the simulations matrix from the simulations Histogram
 
 public:
@@ -26,8 +26,9 @@ public:
   double operator ()(const double* args) const;
   void SetData(const VectorXd& dataToFit);
   void SetDataErr(const VectorXd& dataErrors);
-  const VectorXd& GetDataErr() const;
-  const MatrixXd& GetSimulations() const;
+  const VectorXd& getDataErr() const;
+  const MatrixXd& getSimulations() const;
+  unsigned getNumberOfFreeParameters() const;
 
 };
 

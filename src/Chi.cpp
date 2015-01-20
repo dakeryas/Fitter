@@ -16,23 +16,23 @@ Chi::Chi(const VectorXd& dataToFit, const VectorXd& dataErrors, const MatrixXd& 
 
 }
 
-Chi::Chi(vector<TH1D>::const_iterator itDataToFit, vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations):dataToFit(Map<const VectorXd>(itDataToFit->GetArray()+1,itDataToFit->GetNbinsX())),dataErrors(itDataToFit->GetNbinsX()),simulations(GetMaxNbins(itStartSimulations,itEndSimulations), itEndSimulations-itStartSimulations){
+Chi::Chi(vector<TH1D>::const_iterator itDataToFit, vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations):dataToFit(Map<const VectorXd>(itDataToFit->GetArray()+1,itDataToFit->GetNbinsX())),dataErrors(itDataToFit->GetNbinsX()),simulations(getMaxNbins(itStartSimulations,itEndSimulations), itEndSimulations-itStartSimulations){
 
   FillErrors(*itDataToFit);
   FillSim(itStartSimulations, itEndSimulations);
   
 }
 
-Chi::Chi(const TH1D& dataToFit, const vector<TH1D>& simHist):dataToFit(Map<const VectorXd>(dataToFit.GetArray()+1, dataToFit.GetNbinsX())),dataErrors(dataToFit.GetNbinsX()),simulations(GetMaxNbins(simHist.begin(),simHist.end()), simHist.size()){
+Chi::Chi(const TH1D& dataToFit, const vector<TH1D>& simHist):dataToFit(Map<const VectorXd>(dataToFit.GetArray()+1, dataToFit.GetNbinsX())),dataErrors(dataToFit.GetNbinsX()),simulations(getMaxNbins(simHist.begin(),simHist.end()), simHist.size()){
 
   FillErrors(dataToFit);
   FillSim(simHist.begin(), simHist.end());
   
 }
 
-Chi::Chi(const Data& dataToFit, const Data& simulations):Chi(dataToFit.GetHistograms().front(), simulations.GetTH1DCopies()){
+Chi::Chi(const Data& dataToFit, const Data& simulations):Chi(dataToFit.getHistograms().front(), simulations.getTH1DCopies()){
 
-  covariances = simulations.GetMatrices();
+  covariances = simulations.getMatrices();
   
 }
 
@@ -57,23 +57,29 @@ void Chi::SetDataErr(const VectorXd& dataErrors){
 
 }
 
-const VectorXd& Chi::GetDataErr() const{
+const VectorXd& Chi::getDataErr() const{
 
   return dataErrors;
   
 }
 
-const MatrixXd& Chi::GetSimulations() const{
+const MatrixXd& Chi::getSimulations() const{
 
   return simulations;
   
 }
 
-int Chi::GetMaxNbins(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations){
+int Chi::getMaxNbins(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations){
 
   int maxNBinsX = itStartSimulations->GetNbinsX();
   for (auto it = itStartSimulations; it != itEndSimulations; ++it) if(it->GetNbinsX()>maxNBinsX) maxNBinsX=it->GetNbinsX();
   return maxNBinsX;
+  
+}
+
+unsigned Chi::getNumberOfFreeParameters() const{
+  
+  return simulations.cols();
   
 }
 
