@@ -1,5 +1,9 @@
 #include "Data.hpp"
 
+using namespace std;
+using namespace::Eigen;
+using namespace boost::filesystem;
+
 ostream& operator<<(ostream& output, const Data& data){
   
   output<<"Histograms:\n";

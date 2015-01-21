@@ -1,5 +1,7 @@
 #include "Minimizer.hpp"
 
+using namespace std;
+
 ostream& operator<<(ostream& output, const Minimizer& min){
 
   output<<"Solution:\n";

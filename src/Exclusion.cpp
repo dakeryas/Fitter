@@ -1,5 +1,7 @@
 #include "Exclusion.hpp"
 
+using namespace std;
+
 template <class T> void launchThreads(vector<T>& workers){
 
   unsigned nThreads = thread::hardware_concurrency();//get the number of working cores
@@ -27,11 +29,10 @@ template <class T> void launchThreads(vector<T>& workers){
 struct relativeKthTimeEstimator{
   
   double& kthTime;
-  ROOT::Math::Functor f;
   Chi chiSquared;
   unsigned nSigma;
   
-  relativeKthTimeEstimator(double& kthTime, const ROOT::Math::Functor& f, const Chi& chiSquared, unsigned nSigma):kthTime(kthTime),f(f),chiSquared(chiSquared),nSigma(nSigma){
+  relativeKthTimeEstimator(double& kthTime, const Chi& chiSquared, unsigned nSigma):kthTime(kthTime),chiSquared(chiSquared),nSigma(nSigma){
     
   };
   void operator()(){
@@ -44,7 +45,19 @@ struct relativeKthTimeEstimator{
   
 };
 
-Exclusion::Exclusion(unsigned int nSigma, const Binning& heFraction):nSigma(nSigma),heFraction(heFraction){
+ostream& operator<<(ostream& output, const Exclusion& exclusion){
+  
+  for(unsigned k = 0; k<exclusion.getHeFraction().getNumberOfSteps(); ++k){
+    
+    output<<exclusion.getHeFraction()<<"\t"<<exclusion.getTime().at(k);
+    
+  }
+  
+  return output;
+
+}
+
+Exclusion::Exclusion(unsigned int nSigma, const Binning& heFraction):nSigma(nSigma),heFraction(heFraction),time(heFraction.getNumberOfSteps()){
   
 }
 
@@ -53,9 +66,6 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
   VectorXd fractions(simulations.getSize());//we have one simulation less the total number of histograms
   Chi chiSquared(dataToFit, simulations);//intialisation with the real values
   VectorXd dataError = chiSquared.getDataErr();//save the data error
-  Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
-
-  double time[heFraction.getNumberOfSteps()];
 
   vector<relativeKthTimeEstimator> workers;
   
@@ -67,13 +77,13 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
     chiSquared.SetData(chiSquared.getSimulations()*fractions);
     chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
     
-    workers.push_back(relativeKthTimeEstimator(time[k],min.getFunctor(), chiSquared, nSigma));
+    workers.push_back(relativeKthTimeEstimator(time.at(k), chiSquared, nSigma));
 
   }
   
   launchThreads(workers);
   
-  graph = TGraph(heFraction.getNumberOfSteps(), time, heFraction.getDataBins());
+  graph = TGraph(heFraction.getNumberOfSteps(), time.data(), heFraction.getDataBins());
   
 }
 
@@ -89,6 +99,31 @@ void Exclusion::makeUpGraph(unsigned colourNumber){
   graph.SetLineColor(colourNumber);
   graph.SetLineWidth(-602);//write an number greater than 99 otherwise the exclusion area is not drawn ! //add a minus sign to reverse the direction of the dashes !
   
+}
+
+void Exclusion::setSignificance(unsigned int nSigma){
+  
+  this->nSigma = nSigma;
+
+}
+
+void Exclusion::setBinning(const Binning& heFraction){
+  
+  this->heFraction = heFraction;
+  time.resize(heFraction.getNumberOfSteps(), 0);
+
+}
+
+const Binning& Exclusion::getHeFraction() const{
+  
+  return heFraction;
+
+}
+
+const vector<double>& Exclusion::getTime() const{
+  
+  return time;
+
 }
 
 const TGraph& Exclusion::getExclusionGraph() const{

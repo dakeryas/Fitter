@@ -1,5 +1,8 @@
 # include "DataRebin.hpp"
 
+using namespace std;
+using namespace Eigen;
+
 ostream& operator<<(ostream& output, const DataRebin& rebinner){
 
   output<<"rebinVector = \n";
