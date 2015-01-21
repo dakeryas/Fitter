@@ -51,6 +51,11 @@ void Minimizer::Update(ROOT::Math::Functor f){
 
 }
 
+const ROOT::Math::Functor& Minimizer::getFunctor() const{
+  
+  return f;
+
+}
 
 const vector<double>& Minimizer::getSol() const{
 

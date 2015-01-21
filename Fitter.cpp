@@ -73,7 +73,7 @@ int main (int argc, char* argv[]){
   
   if (argc == 3 && is_directory(path("./ToFit"))) Fitter(path("./ToFit"), argv[1], argv[2]);
   else if (argc == 4 && is_directory(path(argv[1]))) Fitter(path(argv[1]), argv[2], argv[3]);
-  else cout<<"Error: you must provide a valid target directory, a Datasfile to fit, and simulation files"<<endl;
+  else cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files"<<endl;
   return 0;
   
 }

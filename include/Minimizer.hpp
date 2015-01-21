@@ -24,6 +24,7 @@ public:
   Minimizer(ROOT::Math::Functor f);
   void Process();
   void Update(ROOT::Math::Functor f);
+  const ROOT::Math::Functor& getFunctor() const;
   const vector<double>& getSol() const;
   const vector<double>& getErrors() const;
   const double& getMinVal() const;

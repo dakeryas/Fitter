@@ -1,5 +1,49 @@
 #include "Exclusion.hpp"
 
+template <class T> void launchThreads(vector<T>& workers){
+
+  unsigned nThreads = thread::hardware_concurrency();//get the number of working cores
+  if(nThreads == 0) nThreads = 1;
+  vector<thread> threads(nThreads);
+  
+  auto itWk = workers.begin();
+  while(itWk != workers.end()){
+    
+    auto itTh = threads.begin(); 
+    while(itTh != threads.end() && itWk != workers.end()){
+
+      *itTh = thread(*itWk);//start each thread
+      ++itTh;
+      ++itWk;
+      
+    }
+    
+    for(thread& th : threads) if(th.joinable()) th.join();//join them all to the current thread
+    
+  }
+  
+}
+
+struct relativeKthTimeEstimator{
+  
+  double& kthTime;
+  ROOT::Math::Functor f;
+  Chi chiSquared;
+  unsigned nSigma;
+  
+  relativeKthTimeEstimator(double& kthTime, const ROOT::Math::Functor& f, const Chi& chiSquared, unsigned nSigma):kthTime(kthTime),f(f),chiSquared(chiSquared),nSigma(nSigma){
+    
+  };
+  void operator()(){
+    
+    Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
+    TimeEstimator timeEstimator;
+    kthTime = timeEstimator.getRelativeTime(min, chiSquared, nSigma);
+    
+  };
+  
+};
+
 Exclusion::Exclusion(unsigned int nSigma, const Binning& heFraction):nSigma(nSigma),heFraction(heFraction){
   
 }
@@ -11,9 +55,11 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
   VectorXd dataError = chiSquared.getDataErr();//save the data error
   Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
 
-  TimeEstimator timeEstimator;//defaults to a 1.01 dataFactor
+//   TimeEstimator timeEstimator;//defaults to a 1.01 dataFactor
   double time[heFraction.getNumberOfSteps()];
 
+  vector<relativeKthTimeEstimator> workers;
+  
   for(unsigned k = 0; k<heFraction.getNumberOfSteps(); ++k){
     
     fractions(0) = heFraction.getValue(k);
@@ -22,9 +68,12 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
     chiSquared.SetData(chiSquared.getSimulations()*fractions);
     chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
     
-    time[k] = timeEstimator.getRelativeTime(min, chiSquared, nSigma);
+    workers.push_back(relativeKthTimeEstimator(time[k],min.getFunctor(), chiSquared, nSigma));
+//     time[k] = timeEstimator.getRelativeTime(min, chiSquared, nSigma);
 
   }
+  
+  launchThreads(workers);
   
   graph = TGraph(heFraction.getNumberOfSteps(), time, heFraction.getDataBins());
   

@@ -1,6 +1,7 @@
 #ifndef EXCLUSION_H
 #define EXCLUSION_H
 
+#include <thread>
 #include <TGraph.h>
 #include <TLatex.h>
 #include "Binning.hpp"
