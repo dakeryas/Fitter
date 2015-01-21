@@ -30,16 +30,17 @@ struct relativeKthTimeEstimator{
   
   double& kthTime;
   Chi chiSquared;
+  vector<double> initialValues;
   unsigned nSigma;
   
-  relativeKthTimeEstimator(double& kthTime, const Chi& chiSquared, unsigned nSigma):kthTime(kthTime),chiSquared(chiSquared),nSigma(nSigma){
+  relativeKthTimeEstimator(double& kthTime, const Chi& chiSquared, const vector<double>& initialValues, unsigned nSigma):kthTime(kthTime),chiSquared(chiSquared),initialValues(initialValues),nSigma(nSigma){
     
   };
   void operator()(){
     
     Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
     TimeEstimator timeEstimator;
-    kthTime = timeEstimator.getRelativeTime(min, chiSquared, nSigma);
+    kthTime = timeEstimator.getRelativeTime(min, chiSquared, initialValues, nSigma);
     
   };
   
@@ -77,7 +78,7 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
     chiSquared.SetData(chiSquared.getSimulations()*fractions);
     chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
     
-    workers.push_back(relativeKthTimeEstimator(time.at(k), chiSquared, nSigma));
+    workers.push_back(relativeKthTimeEstimator(time.at(k), chiSquared, {fractions(0),fractions(1)}, nSigma)); //the initial values for the chiSquared are the fractions you put in 
 
   }
   

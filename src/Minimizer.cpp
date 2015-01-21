@@ -17,12 +17,12 @@ Minimizer::Minimizer():minVal(0){
 
 Minimizer::Minimizer(ROOT::Math::Functor f):f(f),minuit(ROOT::Minuit2::kMigrad),step(f.NDim()),variable(f.NDim()),sol(f.NDim()),err(f.NDim()),minVal(0){
   
-  SetDefaultValues();
-  SetMaths();
+  setDefaultValues();
+  setMaths();
   
 }
 
-void Minimizer::SetDefaultValues(){
+void Minimizer::setDefaultValues(){
   
   for(double& s : step) s = 1e-6;//set the default step size
   minuit.SetMaxFunctionCalls(1e9);
@@ -30,7 +30,7 @@ void Minimizer::SetDefaultValues(){
   
 }
 
-void Minimizer::SetMaths(){
+void Minimizer::setMaths(){
   
   minuit.SetFunction(f);
   for(unsigned k = 0; k<f.NDim(); ++k) minuit.SetVariable(k,"x_"+to_string(k),variable[k], step[k]);//set all the variables according to the dimension of the Functor
@@ -49,7 +49,18 @@ void Minimizer::Process(){
 void Minimizer::Update(ROOT::Math::Functor f){
   
   this->f = f;
-  SetMaths();
+  setMaths();
+
+}
+
+void Minimizer::setInitialValues(const vector<double>& variable){
+  
+  if(this->variable.size() == variable.size()){
+    
+    this->variable = variable;
+    setMaths();
+    
+  }
 
 }
 

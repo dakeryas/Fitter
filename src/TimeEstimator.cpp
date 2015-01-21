@@ -24,9 +24,10 @@ const double& TimeEstimator::getDataIncrease() const{
 
 }
 
-double TimeEstimator::getRelativeTime(Minimizer& min, Chi& chiSquared, unsigned int nSigma){
+double TimeEstimator::getRelativeTime(Minimizer& min, Chi& chiSquared, const std::vector<double>& initialValues, unsigned int nSigma){
   
   min.Update(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
+  min.setInitialValues(initialValues);
   min.Process();
   
   double dataIncrease = 0;
@@ -35,6 +36,7 @@ double TimeEstimator::getRelativeTime(Minimizer& min, Chi& chiSquared, unsigned 
 
     chiSquared.SetDataErr(chiSquared.getDataErr()/std::sqrt(dataFactor));//double the data if the errors are to large to exclude a zero fraction of the first element
     min.Update(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
+    min.setInitialValues(initialValues);
     min.Process();
     ++dataIncrease;
     
