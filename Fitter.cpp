@@ -47,7 +47,7 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
 
   Minimizer min(ROOT::Math::Functor(chiSquared, simulations.getHistograms().size()));
   min.Process();
-  cout<<min<<endl;
+  cout<<min<<"\n";
   cout<<"NDF = "<<dataToFit.getHistograms().front().GetNbinsX()-2<<endl;
   
 }
@@ -64,7 +64,7 @@ void Fitter(const path& directory, const string& data_sorter, const string& simu
   simuRebinner.ApplyRebin();//apply this Binning to the simulations
 
   fitFirstToRest(measuresRebinner.GetData(), simuRebinner.GetData());
-  Binning heFracBinning = {5, 3, 20};//steps per percent, starting percent, ending percent
+  Binning heFracBinning = {5, 4, 20};//steps per percent, starting percent, ending percent
   saveExclusion(measuresRebinner.GetData(), simuRebinner.GetData(), heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
   
 }
