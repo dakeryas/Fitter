@@ -4,7 +4,7 @@ ostream& operator<<(ostream& output, const Minimizer& min){
 
   output<<"Solution:\n";
   for(unsigned k = 0; k<min.getSol().size(); ++k) output<<min.getSol().at(k)<<" +/ "<<min.getErrors().at(k)<<"\n";
-  output<<"Value at solution:\n"<<min.getMinVal()<<"\n";
+  output<<"Value at solution:\n"<<min.getMinVal();
   return output;
   
 }
