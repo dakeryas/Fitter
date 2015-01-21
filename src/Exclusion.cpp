@@ -55,7 +55,6 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
   VectorXd dataError = chiSquared.getDataErr();//save the data error
   Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
 
-//   TimeEstimator timeEstimator;//defaults to a 1.01 dataFactor
   double time[heFraction.getNumberOfSteps()];
 
   vector<relativeKthTimeEstimator> workers;
@@ -69,7 +68,6 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
     chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
     
     workers.push_back(relativeKthTimeEstimator(time[k],min.getFunctor(), chiSquared, nSigma));
-//     time[k] = timeEstimator.getRelativeTime(min, chiSquared, nSigma);
 
   }
   
