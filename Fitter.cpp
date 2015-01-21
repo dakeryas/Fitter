@@ -64,7 +64,7 @@ void Fitter(const boost::filesystem::path& directory, const string& data_sorter,
   simuRebinner.ApplyRebin();//apply this Binning to the simulations
 
   fitFirstToRest(measuresRebinner.GetData(), simuRebinner.GetData());
-  Binning heFracBinning = {5, 2, 20};//steps per percent, starting percent, ending percent
+  Binning heFracBinning = {5, 2.8, 20};//steps per percent, starting percent, ending percent
   saveExclusion(measuresRebinner.GetData(), simuRebinner.GetData(), heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
   
 }

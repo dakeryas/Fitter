@@ -49,7 +49,7 @@ ostream& operator<<(ostream& output, const Exclusion& exclusion){
   
   for(unsigned k = 0; k<exclusion.getHeFraction().getNumberOfSteps(); ++k){
     
-    output<<exclusion.getHeFraction()<<"\t"<<exclusion.getTime().at(k);
+    output<<"To exclude the "<<exclusion.getHeFraction().getValue(k)<<" fraction to "<<exclusion.getSignificance()<<"-sigma we need "<<exclusion.getTime().at(k)<<" time(s) as much data as we currently have.\n";
     
   }
   
@@ -82,6 +82,7 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
   }
   
   launchThreads(workers);
+  cout<<*this<<endl;
   
   graph = TGraph(heFraction.getNumberOfSteps(), time.data(), heFraction.getDataBins());
   
@@ -111,6 +112,12 @@ void Exclusion::setBinning(const Binning& heFraction){
   
   this->heFraction = heFraction;
   time.resize(heFraction.getNumberOfSteps(), 0);
+
+}
+
+const unsigned int& Exclusion::getSignificance() const{
+  
+  return nSigma;
 
 }
 

@@ -20,6 +20,7 @@ public:
   void makeUpGraph(unsigned colourNumber = 4);//sets the graph to an exclusion plot style of colour = colourNumber (defaults to blue)
   void setSignificance(unsigned nSigma);//sets nSigma
   void setBinning(const Binning& heFraction);
+  const unsigned& getSignificance() const;
   const Binning& getHeFraction() const;
   const std::vector<double>& getTime() const;
   const TGraph& getExclusionGraph() const;
