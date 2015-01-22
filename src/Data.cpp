@@ -19,6 +19,26 @@ ostream& operator<<(ostream& output, const Data& data){
   
 }
 
+Data operator+(Data d1, const Data& d2){
+  
+  d1 += d2;
+  return d1;
+
+}
+
+Data operator*(Data data, double a){
+  
+  data *= a;
+  return data;
+
+}
+
+Data operator*(double a, Data data){
+  
+  return data * a;
+
+}
+
 Data join(const Data& d1, const Data& d2){
 
   Data d = d1;
@@ -71,6 +91,28 @@ const Data& Data::operator=(const Data& other){
   filepaths = other.filepaths;
   h = other.h;
   matrices = other.matrices;
+  return *this;
+
+}
+
+Data& Data::operator+=(const Data& other){
+  
+  
+  for(pair<vector<Hist>::iterator, vector<Hist>::const_iterator> itPair(h.begin(), other.h.begin()); itPair.first != h.end() && itPair.second != other.h.end(); ++itPair.first, ++itPair.second)
+    *itPair.first += *itPair.second;
+  
+  for(pair<vector<MatrixXd>::iterator, vector<MatrixXd>::const_iterator> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
+    *itPair.first += *itPair.second;
+  
+  return *this;
+
+}
+
+Data& Data::operator*=(double a){
+  
+  for(auto it = h.begin(); it != h.end(); ++it) *it *= a;
+  for(auto it = matrices.begin(); it != matrices.end(); ++it) *it *= a;
+  
   return *this;
 
 }
@@ -173,7 +215,7 @@ void Data::StoreData(){ //store all TH1D Histograms of all files into the vector
   TObject* read_object;//to flush the key into a TObject
   TDirectory* CurrentDir = gDirectory->GetDirectory("");//shameful trick 
   
-  for(const path& p : filepaths){
+  for(const auto& p : filepaths){
   
     TFile file(p.string().c_str());
     CurrentDir->cd(); //shameful trick, second part

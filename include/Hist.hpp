@@ -14,8 +14,13 @@ public:
   Hist();
   Hist(const TH1D& h);
   Hist(const Hist& other);
+  Hist& operator+=(const Hist& other);
+  Hist& operator*=(double a);
   const std::vector<double>& GetBins() const;
-
+  bool isCompatibleWith(const Hist& other) const; //checks if the binnings match 
+  
 };
+
+Hist operator+(Hist h1, const Hist& h2);
 
 #endif

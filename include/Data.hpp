@@ -47,6 +47,8 @@ public:
   Data(const boost::filesystem::path& search_path, const std::string& file_sorter);//fills any root file whose name matches the std::string sorter
   Data(const Data& other);
   const Data& operator=(const Data& other);
+  Data& operator+=(const Data& other);
+  Data& operator*=(double a);
   const std::vector<boost::filesystem::path>& getFilePaths() const;
   const std::vector<Hist>& getHistograms() const;
   const std::vector<TH1D> getTH1DCopies() const;
@@ -57,5 +59,8 @@ public:
 };
 
 std::ostream& operator<<(std::ostream& output, const Data& data);
+Data operator+(Data d1, const Data& d2);
+Data operator*(Data data, double a);
+Data operator*(double a, Data data);
 
 #endif

@@ -76,7 +76,7 @@ void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulatio
     fractions(0) = heFraction.getValue(k);
     fractions(1) = 1 - fractions(0);
     
-    chiSquared.SetData(chiSquared.getSimulations()*fractions);
+    chiSquared.SetData(chiSquared.getSimulations()*fractions);//faking the data from the simulations
     chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
     
     workers.push_back(relativeKthTimeEstimator(time.at(k), chiSquared, {fractions(0),fractions(1)}, nSigma)); //the initial values for the chiSquared are the fractions you put in 
