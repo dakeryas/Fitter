@@ -1,5 +1,8 @@
 #include "Chi.hpp"
 
+using namespace Eigen;
+using namespace std;
+
 Chi::Chi(){
 
 }

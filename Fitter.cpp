@@ -47,12 +47,12 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
 
   Minimizer min(ROOT::Math::Functor(chiSquared, simulations.getHistograms().size()));
   min.Process();
-  cout<<min<<"\n";
-  cout<<"NDF = "<<dataToFit.getHistograms().front().GetNbinsX()-2<<endl;
+  std::cout<<min<<"\n";
+  std::cout<<"NDF = "<<dataToFit.getHistograms().front().GetNbinsX()-2<<std::endl;
   
 }
 
-void Fitter(const boost::filesystem::path& directory, const string& data_sorter, const string& simu_sorter){
+void Fitter(const boost::filesystem::path& directory, const std::string& data_sorter, const std::string& simu_sorter){
 
   Data measures = Data(directory, data_sorter);//retrieve the Data Histogram
   Data simu = Data(directory, simu_sorter);//retrieve the simulations Histograms
@@ -73,7 +73,7 @@ int main (int argc, char* argv[]){
   
   if (argc == 3 && boost::filesystem::is_directory(boost::filesystem::path("./ToFit"))) Fitter(boost::filesystem::path("./ToFit"), argv[1], argv[2]);
   else if (argc == 4 && boost::filesystem::is_directory(boost::filesystem::path(argv[1]))) Fitter(boost::filesystem::path(argv[1]), argv[2], argv[3]);
-  else cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files"<<endl;
+  else std::cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files"<<std::endl;
   return 0;
   
 }

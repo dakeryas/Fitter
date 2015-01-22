@@ -4,30 +4,28 @@
 #include <Eigen/LU>
 #include "Data.hpp"
 
-using namespace::Eigen;
-
 class Chi{
-  VectorXd dataToFit;
-  VectorXd dataErrors;
-  MatrixXd simulations;//each column stands for a spectrum (each to be weighted by the corresponding fraction)
-  vector<MatrixXd> covariances;//covariances associated to the simulations, the sizes must match
-  static int getMaxNbins(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);
+  Eigen::VectorXd dataToFit;
+  Eigen::VectorXd dataErrors;
+  Eigen::MatrixXd simulations;//each column stands for a spectrum (each to be weighted by the corresponding fraction)
+  std::vector<Eigen::MatrixXd> covariances;//covariances associated to the simulations, the sizes must match
+  static int getMaxNbins(std::vector<TH1D>::const_iterator itStartSimulations, std::vector<TH1D>::const_iterator itEndSimulations);
   void FillErrors(const TH1D& dataToFit);//fill dataErrors from the TH1D:getBinError method
-  void FillSim(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);//fills the simulations matrix from the simulations Histogram
+  void FillSim(std::vector<TH1D>::const_iterator itStartSimulations, std::vector<TH1D>::const_iterator itEndSimulations);//fills the simulations matrix from the simulations Histogram
 
 public:
   Chi();
-  Chi(const VectorXd& dataToFit, const MatrixXd& simulations);//if no errors are given, build the dataErrors from the coefficient-wise sqrt of dataToFit
-  Chi(const VectorXd& dataToFit, const VectorXd& dataErrors, const MatrixXd& simulations);
-  Chi(const VectorXd& dataToFit, const VectorXd& dataErrors, const MatrixXd& simulations, const vector<MatrixXd>& covariances);
-  Chi(vector<TH1D>::const_iterator itDataToFit, vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations);
-  Chi(const TH1D& dataToFit, const vector<TH1D>& simulations);
+  Chi(const Eigen::VectorXd& dataToFit, const Eigen::MatrixXd& simulations);//if no errors are given, build the dataErrors from the coefficient-wise sqrt of dataToFit
+  Chi(const Eigen::VectorXd& dataToFit, const Eigen::VectorXd& dataErrors, const Eigen::MatrixXd& simulations);
+  Chi(const Eigen::VectorXd& dataToFit, const Eigen::VectorXd& dataErrors, const Eigen::MatrixXd& simulations, const std::vector<Eigen::MatrixXd>& covariances);
+  Chi(std::vector<TH1D>::const_iterator itDataToFit, std::vector<TH1D>::const_iterator itStartSimulations, std::vector<TH1D>::const_iterator itEndSimulations);
+  Chi(const TH1D& dataToFit, const std::vector<TH1D>& simulations);
   Chi(const Data& dataToFit, const Data& simulations);//retrive the Histograms from the Data class to use the first constructor
   double operator ()(const double* args) const;
-  void SetData(const VectorXd& dataToFit);
-  void SetDataErr(const VectorXd& dataErrors);
-  const VectorXd& getDataErr() const;
-  const MatrixXd& getSimulations() const;
+  void SetData(const Eigen::VectorXd& dataToFit);
+  void SetDataErr(const Eigen::VectorXd& dataErrors);
+  const Eigen::VectorXd& getDataErr() const;
+  const Eigen::MatrixXd& getSimulations() const;
   unsigned getNumberOfFreeParameters() const;
 
 };

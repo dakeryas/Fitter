@@ -13,7 +13,7 @@ friend std::ostream& operator<<(std::ostream& output, const DataRebin& rebinner)
   std::vector<double> rebin;//to store the rebin result
   double* rebinArray;//rebin array in a C-style version
   static std::vector<double> GetCommonElements(const std::vector<double>& v1, const std::vector<double>& v2, const double epsilon = 1e-3);
-  static vector<int> GetCommonIndices(const std::vector<double>& v1, const std::vector<double>& v2, const double epsilon = 1e-3);//find the indices in v1 whose values match that of v2
+  static std::vector<int> GetCommonIndices(const std::vector<double>& v1, const std::vector<double>& v2, const double epsilon = 1e-3);//find the indices in v1 whose values match that of v2
   static void Normalise(Hist& h, const int ref);//normalise the bin contents of h according to the BinWidth of bin number 'normalise_bin_ref'
   void AllocAndInitArray();//allocate the rebinArray from the size of the vector rebin and initilase rebinArray from the contents of rebin
   void FillRebin();//compute the rebin vector(and fill the array)

@@ -29,10 +29,10 @@ friend Data join(const Data& d1, const Data& d2);//utilitary function to join Da
   void FillMatricesFromRoot(std::vector<TMatrixD>::const_iterator itStart, std::vector<TMatrixD>::const_iterator itEnd);//convert TMatrices to fill Eigen matrices
   void completeWithEmptyMatrices();//if matrices is not the same size as h, fill up the matrices std::vector with empty matrices
   void PathGrabber(const boost::filesystem::path& search_path);
-  void PathGrabber(const boost::filesystem::path& search_path, const string& file_sorter);
-  static bool PathMatches(const boost::filesystem::directory_iterator& it, const string& file_sorter);
+  void PathGrabber(const boost::filesystem::path& search_path, const std::string& file_sorter);
+  static bool PathMatches(const boost::filesystem::directory_iterator& it, const std::string& file_sorter);
   void FillIfRoot(const boost::filesystem::directory_iterator& it);
-  void FillIfRootAnd(const boost::filesystem::directory_iterator& it, const string& file_sorter);
+  void FillIfRootAnd(const boost::filesystem::directory_iterator& it, const std::string& file_sorter);
   static bool ItemMatches(TObject* obj, const char* className);
   void StoreAsHist(TObject* obj);
   void StoreAsMatrix(TObject* obj);
@@ -44,7 +44,7 @@ public:
   Data(const std::vector<TH1D>& h);
   Data(const std::vector<TH1D>& h, const std::vector<TMatrixD>& matrices);
   Data(const boost::filesystem::path& search_path);
-  Data(const boost::filesystem::path& search_path, const string& file_sorter);//fills any root file whose name matches the string sorter
+  Data(const boost::filesystem::path& search_path, const std::string& file_sorter);//fills any root file whose name matches the std::string sorter
   Data(const Data& other);
   const Data& operator=(const Data& other);
   const std::vector<boost::filesystem::path>& getFilePaths() const;

@@ -1,5 +1,7 @@
 # include "Hist.hpp"
 
+using namespace::std;
+
 Hist::Hist(){
   
 }

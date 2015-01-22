@@ -1,6 +1,7 @@
 #include "Exclusion.hpp"
 
 using namespace std;
+using namespace Eigen;
 
 template <class T> void launchThreads(vector<T>& workers){
 
