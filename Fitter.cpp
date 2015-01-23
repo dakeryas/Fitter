@@ -78,7 +78,8 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   rebinner.rebin(simuGd);
   rebinner.rebin(simuH);
 
-  Data simu = 0.42 * simuGd + 0.58 * simuH;std::cout<<rebinner<<"\n"<<simu<<std::endl;
+  double fractionGd = 4.176542e-01;
+  Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
   fitFirstToRest(measures, simu);
   Binning heFracBinning = {5, 2.8, 20};//steps per percent, starting percent, ending percent

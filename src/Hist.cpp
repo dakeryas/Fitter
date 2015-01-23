@@ -42,7 +42,7 @@ Hist& Hist::operator+=(const Hist& other){
 
 Hist& Hist::operator*=(double a){
   
-  (*this) * a;
+  this->Scale(a);
   return *this;
 
 }
