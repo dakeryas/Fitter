@@ -1,6 +1,6 @@
 #include "PathGrabber.hpp"
 #include "Storer.hpp"
-#include "DataRebin.hpp"
+#include "Rebinner.hpp"
 #include "Exclusion.hpp"
 
 void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning& heFraction, const char* outname){
@@ -69,15 +69,13 @@ void Fitter(const boost::filesystem::path& directory, const std::string& data_so
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simu);//fill the ROOT objects from the paths into 'simu'
   
-  DataRebin rebinner(join(measures, simu));//join measures and simulations to get the right rebin
-  DataRebin measuresRebinner(measures, rebinner.GetRebin());//define a rebinner with the newly found Binning
-  measuresRebinner.ApplyRebin();//apply this Binning to the measures
-  DataRebin simuRebinner(simu, rebinner.GetRebin());
-  simuRebinner.ApplyRebin();//apply this Binning to the simulations
+  Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
+  rebinner.rebin(measures);
+  rebinner.rebin(simu);
 
-  fitFirstToRest(measuresRebinner.GetData(), simuRebinner.GetData());
+  fitFirstToRest(measures, simu);
   Binning heFracBinning = {5, 2.8, 20};//steps per percent, starting percent, ending percent
-  saveExclusion(measuresRebinner.GetData(), simuRebinner.GetData(), heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
+  saveExclusion(measures, simu, heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
   
 }
 
