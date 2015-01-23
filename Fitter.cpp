@@ -54,25 +54,32 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   
 }
 
-void Fitter(const boost::filesystem::path& directory, const std::string& data_sorter, const std::string& simu_sorter){
+void Fitter(const boost::filesystem::path& directory, const std::string& dataSorter, const std::string& simuSorterGd, const std::string& simuSorterH){
 
-  PathGrabber pathGrabber;
-  pathGrabber.pushPathsFrom(directory, data_sorter);//retrieve the paths that the contain the ROOT data files
+  Data measures, simuGd, simuH;
   
+  PathGrabber pathGrabber;
+  pathGrabber.pushPathsFrom(directory, dataSorter);//retrieve the paths that the contain the ROOT data files
   Storer storer(pathGrabber.getFilePaths());
-  Data measures;
   storer.fill(measures);//fill the ROOT objects from the paths into 'measures'
   
   pathGrabber.clear();
-  pathGrabber.pushPathsFrom(directory, simu_sorter);//retrieve the paths that the contain the ROOT simulation files
-  Data simu;
+  pathGrabber.pushPathsFrom(directory, simuSorterGd);//retrieve the paths that the contain the ROOT simulation files
   storer.setFilePaths(pathGrabber.getFilePaths());
-  storer.fill(simu);//fill the ROOT objects from the paths into 'simu'
+  storer.fill(simuGd);//fill the ROOT objects from the paths into 'simu'
   
-  Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
+  pathGrabber.clear();
+  pathGrabber.pushPathsFrom(directory, simuSorterH);
+  storer.setFilePaths(pathGrabber.getFilePaths());
+  storer.fill(simuH);
+  
+  Rebinner rebinner(join(measures, simuGd));//join measures and simulations to get the right rebin
   rebinner.rebin(measures);
-  rebinner.rebin(simu);
+  rebinner.rebin(simuGd);
+  rebinner.rebin(simuH);
 
+  Data simu = 0.42 * simuGd + 0.58 * simuH;std::cout<<rebinner<<"\n"<<simu<<std::endl;
+  
   fitFirstToRest(measures, simu);
   Binning heFracBinning = {5, 2.8, 20};//steps per percent, starting percent, ending percent
   saveExclusion(measures, simu, heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
@@ -81,9 +88,9 @@ void Fitter(const boost::filesystem::path& directory, const std::string& data_so
 
 int main (int argc, char* argv[]){
   
-  if (argc == 3 && boost::filesystem::is_directory(boost::filesystem::path("./ToFit"))) Fitter(boost::filesystem::path("./ToFit"), argv[1], argv[2]);
-  else if (argc == 4 && boost::filesystem::is_directory(boost::filesystem::path(argv[1]))) Fitter(boost::filesystem::path(argv[1]), argv[2], argv[3]);
-  else std::cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files"<<std::endl;
+  if (argc == 4 && boost::filesystem::is_directory(boost::filesystem::path("./ToFit"))) Fitter(boost::filesystem::path("./ToFit"), argv[1], argv[2], argv[3]);
+  else if (argc == 5 && boost::filesystem::is_directory(boost::filesystem::path(argv[1]))) Fitter(boost::filesystem::path(argv[1]), argv[2], argv[3], argv[4]);
+  else std::cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files for Gd and Hydrogen"<<std::endl;
   return 0;
   
 }

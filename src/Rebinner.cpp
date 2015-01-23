@@ -3,10 +3,10 @@
 using namespace std;
 using namespace Eigen;
 
-ostream& operator<<(ostream& output, const Rebinner& binsner){
+ostream& operator<<(ostream& output, const Rebinner& edgener){
 
-  output<<"binsVector = \n";
-  for(const double& binEdge : binsner.getRebin()) output<<binEdge<<"\n";
+  output<<"Bin edges = \n";
+  for(const double& binEdge : edgener.getRebin()) output<<binEdge<<"\n";
   return output;
   
 }
@@ -17,7 +17,7 @@ Rebinner::Rebinner(const Data& data){
 
 }
 
-Rebinner::Rebinner(const vector<double>& bins):bins(bins){
+Rebinner::Rebinner(const vector<double>& edge):edge(edge){
   
 }
 
@@ -52,15 +52,15 @@ vector<int> Rebinner::getCommonIndices(const vector<double>& v1, const vector<do
 
 void Rebinner::buildFrom(const Data& data){
   
-  bins = data.getHistograms().front().getBins();//overwrite the old bins
-  for(const Hist& h : data.getHistograms()) bins = getCommonElements(bins, h.getBins());
+  edge = data.getHistograms().front().getEdge();//overwrite the old edge
+  for(const Hist& h : data.getHistograms()) edge = getCommonElements(edge, h.getEdge());
   
 }
 
 void Rebinner::rebin(Data& data) const{
-
-  double* binsArray = new double[bins.size()];
-  copy(bins.begin(), bins.end(), binsArray);
+  
+  double* edgeArray = new double[edge.size()];
+  copy(edge.begin(), edge.end(), edgeArray);
   
   auto itHist = data.getHistogramStartIterator();
   auto itMat = data.getmatricesStartIterator();
@@ -68,18 +68,18 @@ void Rebinner::rebin(Data& data) const{
 
     if(itMat != data.getMatrices().end()){//Rebin the matrix first if it is valid
 
-      vector<int> commonIndices = getCommonIndices(itHist->getBins(), bins);
+      vector<int> commonIndices = getCommonIndices(itHist->getEdge(), edge);
       MatrixXd reducedMatrix(commonIndices.size()-1, commonIndices.size()-1);//create a temporary matrix
       for(unsigned i = 0; i<reducedMatrix.rows(); ++i)
 	for(unsigned j = 0; j<reducedMatrix.cols(); ++j)
 	  reducedMatrix(i,j) = itMat->block(commonIndices[i],commonIndices[j],commonIndices[i+1]-commonIndices[i]-1,commonIndices[j+1]-commonIndices[j]-1).sum();//we need to exclude one index (hence the '-1') to avoid overlap with the nth step
     
-      *itMat = reducedMatrix;//replace the old matrix with the binsned one
+      *itMat = reducedMatrix;//replace the old matrix with the edgened one
       ++itMat;
       
     }
     
-    *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(bins.size()-1, itHist->GetName(), binsArray));//bins the Histogram
+    *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edgeArray));//edge the Histogram
     itHist->Scale(1/itHist->Integral());//rescale to unit area
     ++itHist;
     
@@ -89,10 +89,10 @@ void Rebinner::rebin(Data& data) const{
 
 bool Rebinner::admissibleRebinFor(Data& data) const{
 
-  vector<double> intersection(bins.size());
+  vector<double> intersection(edge.size());
   
   for(const Hist& h : data.getHistograms())
-    if(intersection.begin() == set_intersection(bins.begin(), bins.end(), h.getBins().begin(), h.getBins().end(), intersection.begin())) return false;//if there is no intersection with the proposed bining, return false
+    if(intersection.begin() == set_intersection(edge.begin(), edge.end(), h.getEdge().begin(), h.getEdge().end(), intersection.begin())) return false;//if there is no intersection with the proposed bining, return false
 
   return true;
   
@@ -100,7 +100,7 @@ bool Rebinner::admissibleRebinFor(Data& data) const{
 
 const vector<double>& Rebinner::getRebin() const{
   
-  return bins;
+  return edge;
   
 }
   

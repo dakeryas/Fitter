@@ -18,7 +18,7 @@ MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlat
 ostream& operator<<(ostream& output, const Data& data){
   
   output<<"Histograms:\n";
-  for(const TH1D& Hist : data.getHistograms()) output<<Hist.GetName()<<"\n";
+  for(const TH1D& Hist : data.getHistograms()) output<<Hist<<"\n";
   if(! data.getMatrices().empty()){
     
     output<<"And matrices:\n";
