@@ -1,3 +1,5 @@
+#include "PathGrabber.hpp"
+#include "Storer.hpp"
 #include "DataRebin.hpp"
 #include "Exclusion.hpp"
 
@@ -54,8 +56,18 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
 
 void Fitter(const boost::filesystem::path& directory, const std::string& data_sorter, const std::string& simu_sorter){
 
-  Data measures = Data(directory, data_sorter);//retrieve the Data Histogram
-  Data simu = Data(directory, simu_sorter);//retrieve the simulations Histograms
+  PathGrabber pathGrabber;
+  pathGrabber.pushPathsFrom(directory, data_sorter);//retrieve the paths that the contain the ROOT data files
+  
+  Storer storer(pathGrabber.getFilePaths());
+  Data measures;
+  storer.fill(measures);//fill the ROOT objects from the paths into 'measures'
+  
+  pathGrabber.clear();
+  pathGrabber.pushPathsFrom(directory, simu_sorter);//retrieve the paths that the contain the ROOT simulation files
+  Data simu;
+  storer.setFilePaths(pathGrabber.getFilePaths());
+  storer.fill(simu);//fill the ROOT objects from the paths into 'simu'
   
   DataRebin rebinner(join(measures, simu));//join measures and simulations to get the right rebin
   DataRebin measuresRebinner(measures, rebinner.GetRebin());//define a rebinner with the newly found Binning

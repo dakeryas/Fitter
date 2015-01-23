@@ -2,62 +2,41 @@
 #define DATA_H
 
 #include <vector>
-#include <ostream>
+#include <iostream>
 #include <Eigen/Core>
-#include <boost/filesystem.hpp>
 #include <TH1.h>
 #include <TMatrixF.h>
 #include <TMatrixD.h>
-#include <TCanvas.h>
-#include <TFile.h>
-#include <TObject.h>
-#include <TKey.h>
-#include <TDirectory.h>
-#include <TIterator.h>
 #include "Hist.hpp"
-
-class DataRebin;
 
 class Data{
 
-friend class DataRebin;
-friend Data join(const Data& d1, const Data& d2);//utilitary function to join Data objects and return the joined data
-
-  std::vector<boost::filesystem::path> filepaths;
-  std::vector<Hist> h;
+  std::vector<Hist> histograms;
   std::vector<Eigen::MatrixXd> matrices;
-  void FillMatricesFromRoot(std::vector<TMatrixD>::const_iterator itStart, std::vector<TMatrixD>::const_iterator itEnd);//convert TMatrices to fill Eigen matrices
-  void completeWithEmptyMatrices();//if matrices is not the same size as h, fill up the matrices std::vector with empty matrices
-  void PathGrabber(const boost::filesystem::path& search_path);
-  void PathGrabber(const boost::filesystem::path& search_path, const std::string& file_sorter);
-  static bool PathMatches(const boost::filesystem::directory_iterator& it, const std::string& file_sorter);
-  void FillIfRoot(const boost::filesystem::directory_iterator& it);
-  void FillIfRootAnd(const boost::filesystem::directory_iterator& it, const std::string& file_sorter);
-  static bool ItemMatches(TObject* obj, const char* className);
-  void StoreAsHist(TObject* obj);
-  void StoreAsMatrix(TObject* obj);
-  void StoreFromCan(TObject* read_object);
-  void StoreData();
 
 public:
   Data();
-  Data(const std::vector<TH1D>& h);
-  Data(const std::vector<TH1D>& h, const std::vector<TMatrixD>& matrices);
-  Data(const boost::filesystem::path& search_path);
-  Data(const boost::filesystem::path& search_path, const std::string& file_sorter);//fills any root file whose name matches the std::string sorter
-  Data(const Data& other);
-  const Data& operator=(const Data& other);
-  Data& operator+=(const Data& other);
-  Data& operator*=(double a);
-  const std::vector<boost::filesystem::path>& getFilePaths() const;
+  Data(const std::vector<TH1D>& histograms);
+  Data(const std::vector<TH1D>& histograms, const std::vector<TMatrixD>& matrices);
+  Data& operator+=(const Data& other);//add the bin contents and the matrices coefficient wise
+  Data& operator*=(double a);//multiplies the histograms and the matrices by 'a'
+  void completeWithEmptyMatrices();//if matrices is not the same size as h, fill up the matrices std::vector with empty matrices
+  void pushHist(const Hist& hist);//pushes hist into 'histograms'
+  void pushMatrix(const Eigen::MatrixXd& matrix);//pushes 'matrix' into matrices
+  void push(const Hist& hist, const Eigen::MatrixXd& matrix);//pushes using pushHist and pushMatrix
+  void fillMatricesFromRoot(std::vector<TMatrixD>::const_iterator itStart, std::vector<TMatrixD>::const_iterator itEnd);//convert TMatrices to fill Eigen matrices
   const std::vector<Hist>& getHistograms() const;
+  std::vector<Hist>::iterator getHistogramStartIterator();//awfully ugly solution
   const std::vector<TH1D> getTH1DCopies() const;
   const std::vector<Eigen::MatrixXd>& getMatrices() const;
+  std::vector<Eigen::MatrixXd>::iterator getmatricesStartIterator();//awfully ugly solution
   TMatrixD getRootMatrixCopy(unsigned i) const;
   unsigned getSize() const;//returns the largest size of the std::vectors in Data
+  void clear();//resizes all vectors to zero
 
 };
 
+Data join(Data d1, const Data& d2);//utilitary function to join Data objects and return the joined data
 std::ostream& operator<<(std::ostream& output, const Data& data);
 Data operator+(Data d1, const Data& d2);
 Data operator*(Data data, double a);

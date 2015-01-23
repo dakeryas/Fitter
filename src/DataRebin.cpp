@@ -88,7 +88,7 @@ bool DataRebin::AdmissibleRebin() const{
 
   vector<double> intersection(rebin.size());
   
-  for(const Hist& h : data.h)
+  for(const Hist& h : data.getHistograms())
     if(intersection.begin() == set_intersection(rebin.begin(), rebin.end(), h.GetBins().begin(), h.GetBins().end(), intersection.begin())) return false;//if there is no intersection with the proposed bining, return false
 
   return true;
@@ -97,19 +97,19 @@ bool DataRebin::AdmissibleRebin() const{
 
 void DataRebin::FillRebin(){
   
-  rebin = data.h.front().GetBins();
-  for(const Hist& h : data.h) rebin = GetCommonElements(rebin, h.GetBins());
+  rebin = data.getHistograms().front().GetBins();
+  for(const Hist& h : data.getHistograms()) rebin = GetCommonElements(rebin, h.GetBins());
   AllocAndInitArray();
   
 }
 
 void DataRebin::ApplyRebin(){
 
-  auto itHist = data.h.begin();
-  auto itMat = data.matrices.begin();
-  while(itHist != data.h.end()){
+  auto itHist = data.getHistogramStartIterator();
+  auto itMat = data.getmatricesStartIterator();
+  while(itHist != data.getHistograms().end()){
 
-    if(itMat != data.matrices.end()){//Rebin the matrix first if it is valid
+    if(itMat != data.getMatrices().end()){//Rebin the matrix first if it is valid
 
       vector<int> commonIndices = GetCommonIndices(itHist->GetBins(), rebin);
       MatrixXd reducedMatrix(commonIndices.size()-1, commonIndices.size()-1);//create a temporary matrix

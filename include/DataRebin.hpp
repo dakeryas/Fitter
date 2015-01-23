@@ -26,7 +26,7 @@ public:
   DataRebin(const DataRebin& other);
   DataRebin& operator = (const DataRebin& other);
   ~DataRebin();
-  void ApplyRebin();//actually rebin the Histograms
+  void ApplyRebin();//actually rebin 'data'
   const Data& GetData() const;
   const std::vector<double>& GetRebin() const;
 
