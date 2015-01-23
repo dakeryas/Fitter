@@ -3,6 +3,18 @@
 using namespace std;
 using namespace::Eigen;
 
+enum Correlation {independant, correlated};
+MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = correlated){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
+  
+  if(correlation == correlated){
+    
+    return m1.diagonal().array().sqrt().matrix()*m2.diagonal().array().sqrt().matrix().transpose();//take the square root of the variances to get the sigma's and return sigma1 * sigma2.transpose()
+    
+  }
+  else return MatrixXd(m1.cols(), m1.cols());
+  
+}
+
 ostream& operator<<(ostream& output, const Data& data){
   
   output<<"Histograms:\n";
@@ -67,7 +79,7 @@ Data& Data::operator+=(const Data& other){
     *itPair.first += *itPair.second;
   
   for(pair<vector<MatrixXd>::iterator, vector<MatrixXd>::const_iterator> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
-    *itPair.first += *itPair.second;
+    *itPair.first += *itPair.second + 2*covariance(*itPair.first, *itPair.second);
   
   return *this;
 

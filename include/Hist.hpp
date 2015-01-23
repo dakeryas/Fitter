@@ -16,7 +16,8 @@ public:
   Hist(const Hist& other);
   Hist& operator+=(const Hist& other);
   Hist& operator*=(double a);
-  const std::vector<double>& GetBins() const;
+  unsigned getNumberOfBins() const;
+  const std::vector<double>& getBins() const;
   bool isCompatibleWith(const Hist& other) const; //checks if the binnings match 
   
 };

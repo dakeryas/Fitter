@@ -49,7 +49,13 @@ void Hist::FillBins(){//turn an array into a vector
   
 }
 
-const vector<double>& Hist::GetBins() const{
+unsigned Hist::getNumberOfBins() const{
+  
+  return bins.size();
+  
+}
+
+const vector<double>& Hist::getBins() const{
 
   return bins;
   
