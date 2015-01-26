@@ -47,7 +47,8 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
 
   Chi chiSquared(dataToFit, simulations); //Data first and a vector of simulations secondly (with the Data removed first)
 
-  Minimizer min(ROOT::Math::Functor(chiSquared, simulations.getHistograms().size()));
+  Minimiser min(ROOT::Math::Functor(chiSquared, simulations.getHistograms().size()));
+  min.setInitialValues({0, 1});//have it start close to the actual solution
   min.Process();
   std::cout<<min<<"\n";
   std::cout<<"NDF = "<<dataToFit.getHistograms().front().GetNbinsX()-2<<std::endl;
@@ -82,7 +83,7 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
   fitFirstToRest(measures, simu);
-  Binning heFracBinning = {5, 2.8, 20};//steps per percent, starting percent, ending percent
+  Binning heFracBinning = {5, 2, 20};//steps per percent, starting percent, ending percent
   saveExclusion(measures, simu, heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
   
 }

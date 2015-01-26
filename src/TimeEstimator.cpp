@@ -24,7 +24,7 @@ const double& TimeEstimator::getDataIncrease() const{
 
 }
 
-double TimeEstimator::getRelativeTime(Minimizer& min, Chi& chiSquared, const std::vector<double>& initialValues, unsigned int nSigma){
+double TimeEstimator::getRelativeTime(Minimiser& min, Chi& chiSquared, const std::vector<double>& initialValues, unsigned int nSigma){
   
   min.Update(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
   min.setInitialValues(initialValues);

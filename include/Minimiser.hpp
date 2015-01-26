@@ -5,7 +5,7 @@
 #include "Math/Functor.h"
 #include <Minuit2/Minuit2Minimizer.h>
 
-class Minimizer{
+class Minimiser{
  
   ROOT::Math::Functor f;//functor to Minimize
   ROOT::Minuit2::Minuit2Minimizer minuit;//underlying Minuit2 Root Minimizer
@@ -18,8 +18,8 @@ class Minimizer{
   void setMaths();//set f as the function and set the minuit2 variables to variable
 
 public:
-  Minimizer();
-  Minimizer(ROOT::Math::Functor f);
+  Minimiser();
+  Minimiser(ROOT::Math::Functor f);
   void Process();
   void Update(ROOT::Math::Functor f);
   void setInitialValues(const std::vector<double>& variable);
@@ -30,6 +30,6 @@ public:
 
 };
 
-std::ostream& operator<<(std::ostream& output, const Minimizer& min);  
+std::ostream& operator<<(std::ostream& output, const Minimiser& min);  
 
 #endif

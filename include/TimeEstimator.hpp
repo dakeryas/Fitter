@@ -3,7 +3,7 @@
 
 #include <cmath>
 #include "Chi.hpp"
-#include "Minimizer.hpp"
+#include "Minimiser.hpp"
 
 class TimeEstimator{//class to estimate the amount of additional data necessary to have non-zero minimum of chiSquared to nSigma
 
@@ -14,7 +14,7 @@ public:
   TimeEstimator(double dataFactor = 1.01);
   const double& getDataFactor() const;
   const double& getDataIncrease() const;
-  double getRelativeTime(Minimizer& min, Chi& chiSquared, const std::vector<double>& initialValues, unsigned nSigma);//estimates the amount of additional data necessary to have non-zero minimum of chiSquared with a nSigma significance; provide the initial values the minimzer should test
+  double getRelativeTime(Minimiser& min, Chi& chiSquared, const std::vector<double>& initialValues, unsigned nSigma);//estimates the amount of additional data necessary to have non-zero minimum of chiSquared with a nSigma significance; provide the initial values the minimzer should test
   void setDataFactor(double dataFactor);
   
 };

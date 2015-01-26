@@ -21,7 +21,7 @@ template <class T> void launchThreads(vector<T>& workers){
       
     }
     
-    for(thread& th : threads) if(th.joinable()) th.join();//join them all to the current thread
+    for(thread& th : threads) if(th.joinable()) th.join();//join them all to the current thread; if the threads have been launched in the previous batch, there are not joinable any longer and thus won't be executed
     
   }
   
@@ -39,7 +39,7 @@ struct relativeKthTimeEstimator{
   };
   void operator()(){
     
-    Minimizer min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
+    Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
     TimeEstimator timeEstimator;
     kthTime = timeEstimator.getRelativeTime(min, chiSquared, initialValues, nSigma);
     
