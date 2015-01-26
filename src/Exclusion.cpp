@@ -66,19 +66,14 @@ Exclusion::Exclusion(unsigned int nSigma, const Binning& heFraction):nSigma(nSig
 void Exclusion::buildExclusionGraph(const Data& dataToFit, const Data& simulations){//modify h to fill the first component with fake data taken from the simulations
 
   VectorXd fractions(simulations.getSize());//we have one simulation less the total number of histograms
-  Chi chiSquared(dataToFit, simulations);//intialisation with the real values
-  VectorXd dataError = chiSquared.getDataErr();//save the data error
-
+  Chi chiSquared(dataToFit, simulations);//intialisation with the real values (specifically to copy the actual data errors which will be used in place of that of the simulation histograms)
   vector<relativeKthTimeEstimator> workers;
   
   for(unsigned k = 0; k<heFraction.getNumberOfSteps(); ++k){
     
     fractions(0) = heFraction.getValue(k);
     fractions(1) = 1 - fractions(0);
-    
-    chiSquared.SetData(chiSquared.getSimulations()*fractions);//faking the data from the simulations
-    chiSquared.SetDataErr(dataError);//reset the data error for every new fraction to test
-    
+    chiSquared.setData(chiSquared.getSimulations()*fractions);//faking the data from the simulations
     workers.push_back(relativeKthTimeEstimator(time.at(k), chiSquared, {fractions(0),fractions(1)}, nSigma)); //the initial values for the chiSquared are the fractions you put in 
 
   }

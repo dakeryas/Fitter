@@ -21,15 +21,15 @@ Chi::Chi(const VectorXd& dataToFit, const VectorXd& dataErrors, const MatrixXd& 
 
 Chi::Chi(vector<TH1D>::const_iterator itDataToFit, vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations):dataToFit(Map<const VectorXd>(itDataToFit->GetArray()+1,itDataToFit->GetNbinsX())),dataErrors(itDataToFit->GetNbinsX()),simulations(getMaxNbins(itStartSimulations,itEndSimulations), itEndSimulations-itStartSimulations){
 
-  FillErrors(*itDataToFit);
-  FillSim(itStartSimulations, itEndSimulations);
+  fillErrors(*itDataToFit);
+  fillSim(itStartSimulations, itEndSimulations);
   
 }
 
 Chi::Chi(const TH1D& dataToFit, const vector<TH1D>& simHist):dataToFit(Map<const VectorXd>(dataToFit.GetArray()+1, dataToFit.GetNbinsX())),dataErrors(dataToFit.GetNbinsX()),simulations(getMaxNbins(simHist.begin(),simHist.end()), simHist.size()){
 
-  FillErrors(dataToFit);
-  FillSim(simHist.begin(), simHist.end());
+  fillErrors(dataToFit);
+  fillSim(simHist.begin(), simHist.end());
   
 }
 
@@ -48,13 +48,13 @@ double Chi::operator()(const double* args) const{
 
 }
 
-void Chi::SetData(const VectorXd& dataToFit){
+void Chi::setData(const VectorXd& dataToFit){
   
   this->dataToFit = dataToFit;
 
 }
 
-void Chi::SetDataErr(const VectorXd& dataErrors){
+void Chi::setDataErr(const VectorXd& dataErrors){
   
   this->dataErrors = dataErrors;
 
@@ -86,13 +86,13 @@ unsigned Chi::getNumberOfFreeParameters() const{
   
 }
 
-void Chi::FillErrors(const TH1D& dataToFit){
+void Chi::fillErrors(const TH1D& dataToFit){
   
   for(int i = 0; i<dataErrors.size(); ++i) dataErrors(i) = dataToFit.GetBinError(i+1);
   
 }
 
-void Chi::FillSim(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations){
+void Chi::fillSim(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>::const_iterator itEndSimulations){
   
   for(auto it = itStartSimulations; it != itEndSimulations; ++it) simulations.col(it-itStartSimulations) = Map<const VectorXd>(it->GetArray()+1, it->GetNbinsX());
   
