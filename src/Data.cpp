@@ -4,7 +4,7 @@ using namespace std;
 using namespace::Eigen;
 
 enum Correlation {independent, correlated};
-MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = independent){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
+MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = correlated){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
 
   if(correlation == correlated){
 
@@ -161,6 +161,12 @@ TMatrixD Data::getRootMatrixCopy(unsigned i) const{
   if(itMat != matrices.end()) return TMatrixD (itMat->rows(), itMat->cols(), itMat->data());
   else return TMatrixD();
   
+}
+
+unsigned int Data::getNumberOfBins() const{
+  
+  return (*min_element(histograms.begin(), histograms.end(), [](const Hist& h1, const Hist& h2){return h1.getNumberOfBins() < h2.getNumberOfBins();})).getNumberOfBins();
+
 }
 
 unsigned int Data::getSize() const{

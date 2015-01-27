@@ -31,6 +31,7 @@ public:
   const std::vector<Eigen::MatrixXd>& getMatrices() const;
   std::vector<Eigen::MatrixXd>::iterator getmatricesStartIterator();//awfully ugly solution
   TMatrixD getRootMatrixCopy(unsigned i) const;
+  unsigned getNumberOfBins() const;//returns the minimum of the Hist::getNumberOfBins
   unsigned getSize() const;//returns the largest size of the std::vectors in Data
   void clear();//resizes all vectors to zero
 

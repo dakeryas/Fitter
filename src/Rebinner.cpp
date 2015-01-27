@@ -32,8 +32,8 @@ vector<double> Rebinner::getCommonElements(const vector<double>& v1, const vecto
   
   vector<double> common;
   
-  for(unsigned k = 0; k<v1.size(); ++k)
-    for(unsigned p = 0; p<v2.size(); ++p) if(abs(v1[k] - v2[p])<epsilon) common.push_back(v1[k]);
+  for(const double& a : v1)
+    for(const double& b : v2) if(abs(a - b)<epsilon) common.push_back(a);
   
   return common;
   

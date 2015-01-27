@@ -47,11 +47,15 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
 
   Chi chiSquared(dataToFit, simulations); //Data first and a vector of simulations secondly (with the Data removed first)
 
-  Minimiser min(ROOT::Math::Functor(chiSquared, simulations.getHistograms().size()));
+  Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
   min.setInitialValues({0, 1});//have it start close to the actual solution
   min.Process();
+  
   std::cout<<min<<"\n";
-  std::cout<<"NDF = "<<dataToFit.getHistograms().front().GetNbinsX()-2<<std::endl;
+  std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
+  const double heFraction = min.getSol().front()/min.getSol().back();
+  const double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
+  std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<std::endl;
   
 }
 
