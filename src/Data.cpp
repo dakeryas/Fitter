@@ -120,8 +120,8 @@ void Data::push(const Hist& hist, const MatrixXd& matrix){
 }
 
 void Data::fillMatricesFromRoot(vector<TMatrixD>::const_iterator itStart, vector<TMatrixD>::const_iterator itEnd){
-
-  for(auto it = itStart; it != itEnd; ++it) matrices[it-itStart] = Map<const MatrixXd>(it->GetMatrixArray(), it->GetNrows(), it->GetNcols());
+  
+  for(auto it = itStart; it != itEnd; ++it) matrices[it-itStart] = Map<const Matrix<double, Dynamic, Dynamic, RowMajor>>(it->GetMatrixArray(), it->GetNrows(), it->GetNcols());
   
 }
 

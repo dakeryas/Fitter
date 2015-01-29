@@ -1,12 +1,17 @@
 #include "Minimiser.hpp"
 
 using namespace std;
+using namespace Eigen;
 
 ostream& operator<<(ostream& output, const Minimiser& min){
 
   output<<"Solution:\n";
-  for(unsigned k = 0; k<min.getSol().size(); ++k) output<<min.getSol().at(k)<<" +/ "<<min.getErrors().at(k)<<"\n";
-  output<<"Value at solution:\n"<<min.getMinVal();
+  for(unsigned k = 0; k<min.getSol().size(); ++k) output<<setw(8)<<left<<min.getSol().at(k)<<" +/ "<<setw(8)<<left<<min.getErrors().at(k)<<"\n";
+  output<<"#######################\n"
+    <<"Covariance matrix:\n"<<setfill(' ')<<min.getCovariance()<<"\n"
+    <<"Correlation matrix:\n"<<min.getCorrelation()<<"\n"
+    <<"#######################\n"
+    <<"Value at solution:\n"<<min.getMinVal();
   return output;
   
 }
@@ -15,7 +20,7 @@ Minimiser::Minimiser():minVal(0){
 
 }
 
-Minimiser::Minimiser(ROOT::Math::Functor f):f(f),minuit(ROOT::Minuit2::kMigrad),step(f.NDim()),variable(f.NDim()),sol(f.NDim()),err(f.NDim()),minVal(0){
+Minimiser::Minimiser(ROOT::Math::Functor f):f(f),minuit(ROOT::Minuit2::kMigrad),step(f.NDim()),variable(f.NDim()),sol(f.NDim()),err(f.NDim()),covariance(f.NDim(),f.NDim()),minVal(0){
   
   setDefaultValues();
   setMaths();
@@ -42,6 +47,9 @@ void Minimiser::Process(){
   minuit.Minimize();
   sol = vector<double>(minuit.X(), minuit.X()+f.NDim());
   err = vector<double>(minuit.Errors(), minuit.Errors()+f.NDim());
+  double covarianceArray[sol.size()];
+  minuit.GetCovMatrix(covarianceArray);
+  covariance = Map<Matrix<double, Dynamic, Dynamic, RowMajor>>(covarianceArray, sol.size(), sol.size());//the covariance matrix is diagonal anyway, so we don't need to read it as Row Major from the ROOT array
   minVal = minuit.MinValue();
   
 }
@@ -80,6 +88,19 @@ const vector<double>& Minimiser::getErrors() const{
 
   return err;
   
+}
+
+MatrixXd Minimiser::getCovariance() const{
+  
+  return covariance;
+
+}
+
+MatrixXd Minimiser::getCorrelation() const{
+  
+  MatrixXd inverseOfErrors = covariance.diagonal().array().sqrt().inverse().matrix().asDiagonal();
+  return  inverseOfErrors * covariance * inverseOfErrors;
+
 }
 
 const double& Minimiser::getMinVal() const{

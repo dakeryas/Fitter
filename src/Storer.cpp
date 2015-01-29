@@ -50,7 +50,7 @@ void Storer::pushAsMatrix(Data& data, TObject* obj) const{//reads a key to retri
     dynamic_cast<TMatrixF*>(obj)->Copy(mTemp);//copy the TMatrixF into a TMatrixD
     
   }
-  data.pushMatrix(Map<const MatrixXd>(mTemp.GetMatrixArray(), mTemp.GetNrows(), mTemp.GetNcols()));
+  data.pushMatrix(Map<Matrix<double, Dynamic, Dynamic, RowMajor>>(mTemp.GetMatrixArray(), mTemp.GetNrows(), mTemp.GetNcols()));
 
 }
 
