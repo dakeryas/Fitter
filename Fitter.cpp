@@ -48,7 +48,7 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   Chi chiSquared(dataToFit, simulations); //Data first and a vector of simulations secondly (with the Data removed first)
 
   Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
-  min.setInitialValues({0, 1});//have it start close to the actual solution
+  min.setInitialValues({0, dataToFit.getHistograms().front().Integral()});//have it start close to the actual solution
   min.Process();
   
   std::cout<<min<<"\n";
