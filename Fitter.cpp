@@ -59,14 +59,19 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   
 }
 
-void Fitter(const boost::filesystem::path& directory, const std::string& dataSorter, const std::string& simuSorterGd, const std::string& simuSorterH){
+void Fitter(const boost::filesystem::path& directory, const std::string& dataSorterGd, const std::string dataSorterH, const std::string& simuSorterGd, const std::string& simuSorterH){
 
-  Data measures, simuGd, simuH;
+  Data measuresGd, measuresH, simuGd, simuH;
   
   PathGrabber pathGrabber;
-  pathGrabber.pushPathsFrom(directory, dataSorter);//retrieve the paths that the contain the ROOT data files
+  pathGrabber.pushPathsFrom(directory, dataSorterGd);
   Storer storer(pathGrabber.getFilePaths());
-  storer.fill(measures);//fill the ROOT objects from the paths into 'measures'
+  storer.fill(measuresGd);
+  
+  pathGrabber.clear();
+  pathGrabber.pushPathsFrom(directory, dataSorterH);
+  storer.setFilePaths(pathGrabber.getFilePaths());
+  storer.fill(measuresH);
   
   pathGrabber.clear();
   pathGrabber.pushPathsFrom(directory, simuSorterGd);//retrieve the paths that the contain the ROOT simulation files
@@ -78,14 +83,20 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simuH);
   
-  Rebinner rebinner(join(measures, simuGd));//join measures and simulations to get the right rebin
-  rebinner.rebin(measures);
-  rebinner.rebin(simuGd);
-  rebinner.rebin(simuH);
-
+  Data measures = .5*measuresGd + .5*measuresH;
   double fractionGd = 4.176542e-01;
   Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
+  Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
+  rebinner.rebin(measures);
+  rebinner.rebin(measuresGd);
+  rebinner.rebin(measuresH);
+  rebinner.rebin(simu);
+  rebinner.rebin(simuGd);
+  rebinner.rebin(simuH);
+  
+  fitFirstToRest(measuresGd, simuGd);
+  fitFirstToRest(measuresH, simuH);
   fitFirstToRest(measures, simu);
   Binning heFracBinning = {5, 2, 20};//steps per percent, starting percent, ending percent
   saveExclusion(measures, simu, heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
@@ -94,8 +105,8 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
 
 int main (int argc, char* argv[]){
   
-  if (argc == 4 && boost::filesystem::is_directory(boost::filesystem::path("./ToFit"))) Fitter(boost::filesystem::path("./ToFit"), argv[1], argv[2], argv[3]);
-  else if (argc == 5 && boost::filesystem::is_directory(boost::filesystem::path(argv[1]))) Fitter(boost::filesystem::path(argv[1]), argv[2], argv[3], argv[4]);
+  if (argc == 5 && boost::filesystem::is_directory(boost::filesystem::path("./ToFit"))) Fitter(boost::filesystem::path("./ToFit"), argv[1], argv[2], argv[3], argv[4]);
+  else if (argc == 6 && boost::filesystem::is_directory(boost::filesystem::path(argv[1]))) Fitter(boost::filesystem::path(argv[1]), argv[2], argv[3], argv[4], argv[5]);
   else std::cout<<"Error: you must provide a valid target directory, a data file to fit, and simulation files for Gd and Hydrogen"<<std::endl;
   return 0;
   
