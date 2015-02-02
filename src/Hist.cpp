@@ -5,7 +5,9 @@ using namespace::std;
 ostream& operator<<(ostream& output, const Hist& h){
   
   output<<h.GetName()<<"\n";
-  for(unsigned k = 0; k<h.getNumberOfBins(); ++k) output<<"["<<setw(6)<<internal<<h.GetXaxis()->GetBinLowEdge(k+1)<<", "<<setw(6)<<internal<<h.GetXaxis()->GetBinUpEdge(k+1)<<"]"<<setw(8)<<left<<" "<<"-->"<<setw(8)<<left<<" "<<setw(12)<<left<<h.GetBinContent(k)<<"\n";
+  for(unsigned k = 0; k<h.getNumberOfBins(); ++k) output<<"["<<setw(6)<<internal<<h.GetXaxis()->GetBinLowEdge(k+1)<<", "<<setw(6)<<internal<<h.GetXaxis()->GetBinUpEdge(k+1)<<"]"<<setw(8)<<left<<" "
+    <<"-->"<<setw(8)<<left<<" "<<setw(12)<<left<<h.GetBinContent(k)
+    <<"+/-"<<setw(2)<<left<<" "<<setw(12)<<left<<h.GetBinError(k)<<"\n";
   return output;
   
 }
@@ -35,7 +37,12 @@ Hist::Hist(const Hist& other):TH1D(other){
 
 Hist& Hist::operator+=(const Hist& other){
   
-  if(isCompatibleWith(other)) Add(&other);
+  if(isCompatibleWith(other)){
+    
+    Add(&other);
+    SetName((GetName() + string("_+_") + other.GetName()).c_str());
+    
+  }
   return *this;
 
 }
@@ -43,6 +50,7 @@ Hist& Hist::operator+=(const Hist& other){
 Hist& Hist::operator*=(double a){
   
   this->Scale(a);
+  SetName((GetName() + string("_x_")+ to_string(a)).c_str());
   return *this;
 
 }
