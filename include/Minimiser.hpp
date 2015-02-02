@@ -6,6 +6,7 @@
 #include <Eigen/Core>
 #include "Math/Functor.h"
 #include <Minuit2/Minuit2Minimizer.h>
+#include <TError.h> //to access gErrorIgnoreLevel to prevent info messages printing in muli-threading
 
 class Minimiser{
  

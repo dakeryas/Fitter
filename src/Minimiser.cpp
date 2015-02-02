@@ -24,6 +24,7 @@ Minimiser::Minimiser(ROOT::Math::Functor f):f(f),minuit(ROOT::Minuit2::kMigrad),
   
   setDefaultValues();
   setMaths();
+  gErrorIgnoreLevel = 1001;//ignore info messages in multi-threading
   
 }
 
