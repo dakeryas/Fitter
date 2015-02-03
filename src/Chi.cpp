@@ -60,6 +60,12 @@ void Chi::setDataErr(const VectorXd& dataErrors){
 
 }
 
+const VectorXd& Chi::getDataToFit() const{
+  
+  return dataToFit;
+
+}
+
 const VectorXd& Chi::getDataErr() const{
 
   return dataErrors;

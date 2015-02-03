@@ -24,6 +24,7 @@ public:
   double operator ()(const double* args) const;
   void setData(const Eigen::VectorXd& dataToFit);//keep in mind that it only sets the data itself, without its errors (which keep their former values; they can be set with the setDataErr method)
   void setDataErr(const Eigen::VectorXd& dataErrors);
+  const Eigen::VectorXd& getDataToFit() const;
   const Eigen::VectorXd& getDataErr() const;
   const Eigen::MatrixXd& getSimulations() const;
   unsigned getNumberOfFreeParameters() const;

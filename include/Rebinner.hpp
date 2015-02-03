@@ -16,6 +16,8 @@ public:
   Rebinner(const Data& data);//calls buildFrom(data)
   Rebinner(const std::vector<double>& edge);
   void buildFrom(const Data& data);//compute the new 'rebin' compatible with 'data' and the current rebin
+  void excludeBinsAbove(double newUpEdge);//removes bins above newUpEdge in 'edge'
+  void excludeBinsBelow(double newLowEdge);//removes bins below newLowEdge in 'edge'
   void rebin(Data& data) const;//actually rebin 'data'
   bool admissibleRebinFor(Data& data) const;//check whether 'edge' is admissible or not for 'data'
   const std::vector<double>& getRebin() const;

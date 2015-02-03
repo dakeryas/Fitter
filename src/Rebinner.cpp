@@ -57,6 +57,22 @@ void Rebinner::buildFrom(const Data& data){
   
 }
 
+void Rebinner::excludeBinsAbove(double newUpEdge){
+
+  auto it = edge.begin();
+  while(it != edge.end() && (*it) <= newUpEdge) ++it;
+  edge = vector<double>(edge.begin(), it);
+
+}
+
+void Rebinner::excludeBinsBelow(double newLowEdge){
+
+  auto it = edge.begin();
+  while(it != edge.end() && (*it) < newLowEdge) ++it;
+  edge = vector<double>(it, edge.end());
+  
+}
+
 void Rebinner::rebin(Data& data) const{
   
   double* edgeArray = new double[edge.size()];

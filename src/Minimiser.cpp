@@ -7,10 +7,9 @@ ostream& operator<<(ostream& output, const Minimiser& min){
 
   output<<"Solution:\n";
   for(unsigned k = 0; k<min.getSol().size(); ++k) output<<setw(8)<<left<<min.getSol().at(k)<<" +/ "<<setw(8)<<left<<min.getErrors().at(k)<<"\n";
-  output<<"#######################\n"
+  output<<"*************************\n"
     <<"Covariance matrix:\n"<<setfill(' ')<<min.getCovariance()<<"\n"
-    <<"Correlation matrix:\n"<<min.getCorrelation()<<"\n"
-    <<"#######################\n"
+    <<"*************************\n"
     <<"Value at solution:\n"<<min.getMinVal();
   return output;
   
