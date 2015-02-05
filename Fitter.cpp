@@ -82,12 +82,13 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   pathGrabber.pushPathsFrom(directory, simuSorterH);
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simuH);
-  
+
   Data measures = .5*measuresGd + .5*measuresH;
-  double fractionGd = 4.176542e-01;
+  double fractionGd = measuresGd.getHistograms().front().Integral() / (measuresGd.getHistograms().front().Integral() + measuresH.getHistograms().front().Integral());
   Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
   Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
+  rebinner.squeezeBinning(5);
   rebinner.rebin(measures);
   rebinner.rebin(measuresGd);
   rebinner.rebin(measuresH);
