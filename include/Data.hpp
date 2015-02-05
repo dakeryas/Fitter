@@ -1,10 +1,7 @@
 #ifndef DATA_H
 #define DATA_H
 
-#include <vector>
-#include <iostream>
 #include <Eigen/Core>
-#include <TH1.h>
 #include <TMatrixF.h>
 #include <TMatrixD.h>
 #include "Hist.hpp"

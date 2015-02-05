@@ -57,20 +57,38 @@ void Rebinner::buildFrom(const Data& data){
   
 }
 
-void Rebinner::excludeBinsAbove(double newUpEdge){
+void Rebinner::excludeBinsAbove(const double& newUpEdge){
 
-  auto it = edge.begin();
-  while(it != edge.end() && (*it) <= newUpEdge) ++it;
-  edge = vector<double>(edge.begin(), it);
+  auto itGarbage = remove_if(edge.begin(), edge.end(), [&](const double& currentEdge){return currentEdge > newUpEdge;});
+  edge.erase(itGarbage, edge.end());
 
 }
 
-void Rebinner::excludeBinsBelow(double newLowEdge){
+void Rebinner::excludeBinsBelow(const double& newLowEdge){
 
-  auto it = edge.begin();
-  while(it != edge.end() && (*it) < newLowEdge) ++it;
-  edge = vector<double>(it, edge.end());
+  auto itGarbage = remove_if(edge.begin(), edge.end(), [&](const double& currentEdge){return currentEdge < newLowEdge;});//remove_if stores the garbage at the end of the vector and returns an iterator to the start of the garbage
+  edge.erase(itGarbage, edge.end());//the garbage must then be removed with 'erase'
   
+}
+
+void Rebinner::squeezeBinning(unsigned factor){
+  
+  if(getNumberOfBins() % factor == 0){
+
+    vector<double> newEdge;
+    auto it = edge.begin();
+    newEdge.push_back(*it);
+    while(it != edge.end() - 1){
+      
+      advance(it, factor);
+      newEdge.push_back(*it);
+      
+    }
+    
+    edge = newEdge;
+    
+  }
+
 }
 
 void Rebinner::rebin(Data& data) const{
@@ -95,7 +113,7 @@ void Rebinner::rebin(Data& data) const{
       
     }
     
-    *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edgeArray));//edge the Histogram
+    *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edgeArray));//rebin the Histogram
     itHist->Scale(1/itHist->Integral());//rescale to unit area
     ++itHist;
     
@@ -119,4 +137,10 @@ const vector<double>& Rebinner::getRebin() const{
   return edge;
   
 }
+
+unsigned int Rebinner::getNumberOfBins() const{
   
+  if(!edge.empty()) return edge.size() -1;
+  else return 0;
+  
+}
