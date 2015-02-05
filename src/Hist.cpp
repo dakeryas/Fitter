@@ -6,8 +6,8 @@ ostream& operator<<(ostream& output, const Hist& h){
   
   output<<h.GetName()<<"\n";
   for(unsigned k = 0; k<h.getNumberOfBins(); ++k) output<<"["<<setw(6)<<internal<<h.GetXaxis()->GetBinLowEdge(k+1)<<", "<<setw(6)<<internal<<h.GetXaxis()->GetBinUpEdge(k+1)<<"]"<<setw(8)<<left<<" "
-    <<"-->"<<setw(8)<<left<<" "<<setw(12)<<left<<h.GetBinContent(k)
-    <<"+/-"<<setw(2)<<left<<" "<<setw(12)<<left<<h.GetBinError(k)<<"\n";
+    <<"-->"<<setw(8)<<left<<" "<<setw(12)<<left<<h.GetBinContent(k+1)
+    <<"+/-"<<setw(2)<<left<<" "<<setw(12)<<left<<h.GetBinError(k+1)<<"\n";
   return output;
   
 }
