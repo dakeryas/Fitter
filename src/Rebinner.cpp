@@ -72,23 +72,11 @@ void Rebinner::excludeBinsBelow(const double& newLowEdge){
 }
 
 void Rebinner::squeezeBinning(unsigned factor){
+
+  int counter = -1;
+  auto itGarbage = remove_if(edge.begin(), edge.end(), [&](double){++counter; return counter % factor != 0;});//remove all the indices that are not multiples from factor
+  edge.erase(itGarbage, edge.end());
   
-  if(getNumberOfBins() % factor == 0){
-
-    vector<double> newEdge;
-    auto it = edge.begin();
-    newEdge.push_back(*it);
-    while(it != edge.end() - 1){
-      
-      advance(it, factor);
-      newEdge.push_back(*it);
-      
-    }
-    
-    edge = newEdge;
-    
-  }
-
 }
 
 void Rebinner::rebin(Data& data) const{
