@@ -50,7 +50,7 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
   min.setInitialValues({0, dataToFit.getHistograms().front().Integral()});//have it start close to the actual solution
   min.Process();
-  
+
   std::cout<<min<<"\n";
   std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
   const double heFraction = min.getSol().front()/min.getSol().back();
@@ -83,12 +83,12 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simuH);
 
-  Data measures = .5*measuresGd + .5*measuresH;
+  Data measures = measuresGd + measuresH;
   double fractionGd = measuresGd.getHistograms().front().Integral() / (measuresGd.getHistograms().front().Integral() + measuresH.getHistograms().front().Integral());
   Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
   Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
-  rebinner.squeezeBinning(5);
+  rebinner.squeezeBinning(10);
   rebinner.rebin(measures);
   rebinner.rebin(measuresGd);
   rebinner.rebin(measuresH);
