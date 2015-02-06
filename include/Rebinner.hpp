@@ -9,8 +9,8 @@ class Rebinner{
   
   std::vector<double> edge;//to store the bin edges result
   static void Normalise(Hist& h, const int ref);//normalise the bin contents of h according to the BinWidth of bin number 'normalise_bin_ref'
-  static std::vector<double> getCommonElements(const std::vector<double>& v1, const std::vector<double>& v2, const double epsilon = 1e-3);
-  static std::vector<int> getCommonIndices(const std::vector<double>& v1, const std::vector<double>& v2, const double epsilon = 1e-3);//find the indices in v1 whose values match that of v2
+  static std::vector<double> getCommonElements(const std::vector<double>& v1, const std::vector<double>& v2, double epsilon = 1e-3);
+  static std::vector<unsigned> getCommonIndices(const std::vector<double>& v1, const std::vector<double>& v2, double epsilon = 1e-3);//find the indices in v1 whose values match that of v2
 
 public:
   Rebinner(const Data& data);//calls buildFrom(data)

@@ -28,20 +28,18 @@ void Rebinner::Normalise(Hist& h, const int ref){
   
 }
 
-vector<double> Rebinner::getCommonElements(const vector<double>& v1, const vector<double>& v2, const double epsilon){
+vector<double> Rebinner::getCommonElements(const vector<double>& v1, const vector<double>& v2, double epsilon){
   
   vector<double> common;
-  
-  for(const double& a : v1)
-    for(const double& b : v2) if(abs(a - b)<epsilon) common.push_back(a);
-  
+  set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(common), [&](double a, double b){if(abs(a-b)<epsilon) return false; else return a < b;});
+
   return common;
   
 }
 
-vector<int> Rebinner::getCommonIndices(const vector<double>& v1, const vector<double>& v2, const double epsilon) {
+vector<unsigned> Rebinner::getCommonIndices(const vector<double>& v1, const vector<double>& v2, double epsilon) {
 
-  vector<int> commonIndices;
+  vector<unsigned> commonIndices;
   
   for(unsigned k = 0; k<v1.size(); ++k)
     for(unsigned p = 0; p<v2.size(); ++p) if(abs(v1[k] - v2[p])<epsilon) commonIndices.push_back(k);
@@ -90,7 +88,7 @@ void Rebinner::rebin(Data& data) const{
 
     if(itMat != data.getMatrices().end()){//Rebin the matrix first if it is valid
 
-      vector<int> commonIndices = getCommonIndices(itHist->getEdge(), edge);
+      vector<unsigned> commonIndices = getCommonIndices(itHist->getEdge(), edge);
       MatrixXd reducedMatrix(commonIndices.size()-1, commonIndices.size()-1);//create a temporary matrix
       for(unsigned i = 0; i<reducedMatrix.rows(); ++i)
 	for(unsigned j = 0; j<reducedMatrix.cols(); ++j)
@@ -100,7 +98,7 @@ void Rebinner::rebin(Data& data) const{
       ++itMat;
       
     }
-    
+
     *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edgeArray));//rebin the Histogram
     itHist->Scale(1/itHist->Integral());//rescale to unit area
     ++itHist;
