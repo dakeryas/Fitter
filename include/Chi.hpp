@@ -28,7 +28,8 @@ public:
   const Eigen::VectorXd& getDataErr() const;
   const Eigen::MatrixXd& getSimulations() const;
   unsigned getNumberOfFreeParameters() const;
-
+  Eigen::VectorXd getRelativeDispersion(const std::vector<double>& args) const;//return the vector (data - best fit model)/-statistical error only)
+  
 };
 
 #endif

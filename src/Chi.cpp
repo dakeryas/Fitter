@@ -104,3 +104,11 @@ void Chi::fillSim(vector<TH1D>::const_iterator itStartSimulations, vector<TH1D>:
   
 }
 
+VectorXd Chi::getRelativeDispersion(const vector<double>& args) const{
+  
+  VectorXd fractions(2);
+  fractions[0] = args.front();
+  fractions[1] = args.back();
+  return (dataToFit-simulations*fractions).array().abs()*dataErrors.array().inverse();
+
+}

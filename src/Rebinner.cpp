@@ -31,7 +31,7 @@ void Rebinner::Normalise(Hist& h, const int ref){
 vector<double> Rebinner::getCommonElements(const vector<double>& v1, const vector<double>& v2, double epsilon){
   
   vector<double> common;
-  set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(common), [&](double a, double b){if(abs(a-b)<epsilon) return false; else return a < b;});
+  set_intersection(v1.begin(), v1.end(), v2.begin(), v2.end(), back_inserter(common), [&](double a, double b){if(abs(a-b)<epsilon) return false; else return a < b;});//if the numbers are too close to each other, decrete that none is strictly greater than the other
 
   return common;
   

@@ -55,7 +55,12 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
   const double heFraction = min.getSol().front()/min.getSol().back();
   const double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
-  std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<std::endl;
+  std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<"\n";
+  
+  std::cout<<"*************************\n"
+  <<"Relative dispersion:\n"
+  <<chiSquared.getRelativeDispersion(min.getSol())
+  <<"\n*************************\n";
   
 }
 
@@ -88,7 +93,8 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   Data simu = fractionGd * simuGd + (1-fractionGd) * simuH;
   
   Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
-  rebinner.squeezeBinning(10);
+  rebinner.excludeBinsAbove(11.5);
+  rebinner.squeezeBinning(5);
   rebinner.rebin(measures);
   rebinner.rebin(measuresGd);
   rebinner.rebin(measuresH);
