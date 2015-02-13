@@ -28,13 +28,13 @@ void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning
   exclusionGraphTwo.Draw("AL");//draw with axis and line to enable exclusions...
   exclusionGraphThree.Draw("same");
   exclusionGraphFour.Draw("same");
-  TLatex textTwo(3, 0.03, "2 #sigma");//draw for 2 times as much data and a 0.025 He fraction
+  TLatex textTwo(3, 0.045, "2 #sigma");//draw for 2 times as much data and a 0.025 He fraction
   textTwo.SetTextColor(4);
   textTwo.Draw();
-  TLatex textThree(3, 0.067, "3 #sigma");
+  TLatex textThree(3, 0.095, "3 #sigma");
   textThree.SetTextColor(2);
   textThree.Draw();
-  TLatex textFour(3, 0.105, "4 #sigma");
+  TLatex textFour(3, 0.14, "4 #sigma");
   textFour.SetTextColor(416+2);
   textFour.Draw();
   
