@@ -43,14 +43,8 @@ void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning
   
 }
 
-void fitFirstToRest(const Data& dataToFit, const Data& simulations){
-
-  Chi chiSquared(dataToFit, simulations); //Data first and a vector of simulations secondly (with the Data removed first)
-
-  Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
-  min.setInitialValues({0, dataToFit.getHistograms().front().Integral()});//have it start close to the actual solution
-  min.Process();
-
+void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dataToFit, const Data& simulations){
+  
   std::cout<<min<<"\n";
   std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
   const double heFraction = min.getSol().front()/min.getSol().back();
@@ -61,6 +55,27 @@ void fitFirstToRest(const Data& dataToFit, const Data& simulations){
   <<"Relative dispersion:\n"
   <<chiSquared.getRelativeDispersion(min.getSol())
   <<"\n*************************\n";
+  
+  Hist dataSpectrum = dataToFit.getHistograms().front();
+  Hist simuSpectrum = min.getSol().front()*simulations.getHistograms().front() + min.getSol().back()*simulations.getHistograms().back();
+  TCanvas can("can");
+  can.cd();
+  simuSpectrum.Draw();
+  dataSpectrum.Draw("same");
+  TFile canvasFile((std::string("fit_results_")+dataSpectrum.GetName()+".root").c_str(), "recreate");
+  can.Write();
+  
+}
+
+void fitFirstToRest(const Data& dataToFit, const Data& simulations){
+
+  Chi chiSquared(dataToFit, simulations); //Data first and a vector of simulations secondly (with the Data removed first)
+
+  Minimiser min(ROOT::Math::Functor(chiSquared, chiSquared.getNumberOfFreeParameters()));
+  min.setInitialValues({0, dataToFit.getHistograms().front().Integral()});//have it start close to the actual solution
+  min.Process();
+  
+  saveFitResults(min, chiSquared, dataToFit, simulations);
   
 }
 
