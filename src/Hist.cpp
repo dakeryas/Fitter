@@ -77,6 +77,22 @@ const vector<double>& Hist::getEdge() const{
   
 }
 
+void Hist::setErrors(const Eigen::VectorXd& errors){
+  
+  double errorArray[errors.size() + 2];
+  errorArray[0] = 0;//there is no error for the underflow
+  errorArray[errors.size() + 1] = 0; //there is no error for the overflow
+  copy(errors.data(), errors.data() + errors.size(), errorArray + 1);
+  SetError(errorArray);
+
+}
+
+void Hist::setErrorsFrom(const Eigen::MatrixXd& binsCovarianceMatrix){
+  
+  setErrors(binsCovarianceMatrix.diagonal().array().sqrt().matrix());
+
+}
+
 bool Hist::isCompatibleWith(const Hist& other) const{
   
   return edge == other.edge;
