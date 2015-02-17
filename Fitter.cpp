@@ -60,8 +60,13 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   Hist simuSpectrum = min.getSol().front()*simulations.getHistograms().front() + min.getSol().back()*simulations.getHistograms().back();
   TCanvas can("can");
   can.cd();
+  simuSpectrum.GetYaxis()->SetRangeUser(0, 0.11);
+  simuSpectrum.SetLineColor(2);
   simuSpectrum.Draw();
+  dataSpectrum.SetLineWidth(2);
+  dataSpectrum.SetLineColor(4);
   dataSpectrum.Draw("same");
+  can.BuildLegend();
   TFile canvasFile((std::string("fit_results_")+dataSpectrum.GetName()+".root").c_str(), "recreate");
   can.Write();
   
