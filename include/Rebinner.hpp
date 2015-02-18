@@ -11,7 +11,7 @@ class Rebinner{
   static void Normalise(Hist& h, const int ref);//normalise the bin contents of h according to the BinWidth of bin number 'normalise_bin_ref'
   static std::vector<double> getCommonElements(const std::vector<double>& v1, const std::vector<double>& v2, double epsilon = 1e-3);
   static std::vector<unsigned> getCommonIndices(const std::vector<double>& v1, const std::vector<double>& v2, double epsilon = 1e-3);//find the indices in v1 whose values match that of v2
-
+  
 public:
   Rebinner(const Data& data);//calls buildFrom(data)
   Rebinner(const std::vector<double>& edge);
@@ -19,6 +19,7 @@ public:
   void excludeBinsAbove(const double& newUpEdge);//removes bins above newUpEdge in 'edge'
   void excludeBinsBelow(const double& newLowEdge);//removes bins below newLowEdge in 'edge'
   void squeezeBinning(unsigned factor);
+  void rebinMatrix(Eigen::MatrixXd& matrix, const std::vector<double>& edgeForMatrix) const;//you must pass the energy range to which the indices in the matrix correspond so as to rebin it
   void rebin(Data& data) const;//actually rebin 'data'
   bool admissibleRebinFor(Data& data) const;//check whether 'edge' is admissible or not for 'data'
   const std::vector<double>& getRebin() const;
