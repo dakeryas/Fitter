@@ -89,22 +89,25 @@ void Rebinner::rebin(Data& data) const{
     if(!data.getMatrices().empty()){//Rebin the matrix first if it is valid
 
       vector<unsigned> commonIndices = getCommonIndices(itHist->getEdge(), edge);
+
       MatrixXd reducedMatrix(commonIndices.size()-1, commonIndices.size()-1);//create a temporary matrix
       for(unsigned i = 0; i<reducedMatrix.rows(); ++i)
 	for(unsigned j = 0; j<reducedMatrix.cols(); ++j)
-	  reducedMatrix(i,j) = itMat->block(commonIndices[i],commonIndices[j],commonIndices[i+1]-commonIndices[i]-1,commonIndices[j+1]-commonIndices[j]-1).sum();//we need to exclude one index (hence the '-1') to avoid overlap with the nth step
+	  reducedMatrix(i,j) = itMat->block(commonIndices[i],commonIndices[j],commonIndices[i+1]-commonIndices[i],commonIndices[j+1]-commonIndices[j]).sum();
     
       *itMat = reducedMatrix;//replace the old matrix with the edgened one
       
     }
 
     *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edgeArray));//rebin the Histogram
+    
     if(!data.getMatrices().empty()){//if there are covariance matrices available, they should be used for the rebin and the errors recomputed
       
       itHist->setErrorsFrom(*itMat);
       ++itMat;//we're now done with the matrices
       
-    }
+    } 
+    
     itHist->Scale(1/itHist->Integral());//rescale to unit area
     ++itHist;
     
