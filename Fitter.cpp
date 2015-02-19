@@ -60,7 +60,7 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   Hist simuSpectrum = min.getSol().front()*simulations.getHistograms().front() + min.getSol().back()*simulations.getHistograms().back();
   TCanvas can("can");
   can.cd();
-  simuSpectrum.GetYaxis()->SetRangeUser(0, 0.11);
+  simuSpectrum.GetYaxis()->SetRangeUser(0, 1.15*dataSpectrum.GetMaximum());
   simuSpectrum.SetLineColor(2);
   simuSpectrum.Draw();
   dataSpectrum.SetLineWidth(2);
@@ -115,12 +115,12 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   Rebinner rebinner(join(measures, simu));//join measures and simulations to get the right rebin
   rebinner.excludeBinsAbove(11.5);
   rebinner.squeezeBinning(5);
-  rebinner.rebin(measures);
   rebinner.rebin(measuresGd);
   rebinner.rebin(measuresH);
-  rebinner.rebin(simu);
+  rebinner.rebin(measures);
   rebinner.rebin(simuGd);
   rebinner.rebin(simuH);
+  rebinner.rebin(simu);
   
   fitFirstToRest(measuresGd, simuGd);
   fitFirstToRest(measuresH, simuH);
