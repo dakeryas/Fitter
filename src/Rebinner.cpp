@@ -96,16 +96,6 @@ void Rebinner::rebin(Data& data) const{
   auto itMat = data.getmatricesStartIterator();
   while(itHist != data.getHistograms().end()){
 
-=======
-
-}
-
-void Rebinner::rebin(Data& data) const{
-    
-  auto itHist = data.getHistogramStartIterator();
-  auto itMat = data.getmatricesStartIterator();
-  while(itHist != data.getHistograms().end()){
-
     if(itMat != data.getMatrices().end()){//rebin the matrices
       
       rebinMatrix(*itMat, itHist->getEdge());//rebin the matrix first before the edges of the hist change with its rebin
