@@ -74,12 +74,14 @@ Data::Data(const vector<TH1D>& histograms, const vector<TMatrixD>& matrices):his
 
 Data& Data::operator+=(const Data& other){
   
+  for(pair<vector<MatrixXd>::iterator, vector<MatrixXd>::const_iterator> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
+    *itPair.first += *itPair.second + covariance(*itPair.first, *itPair.second) + covariance(*itPair.second, *itPair.first);
   
   for(pair<vector<Hist>::iterator, vector<Hist>::const_iterator> itPair(histograms.begin(), other.histograms.begin()); itPair.first != histograms.end() && itPair.second != other.histograms.end(); ++itPair.first, ++itPair.second)
     *itPair.first += *itPair.second;
   
-  for(pair<vector<MatrixXd>::iterator, vector<MatrixXd>::const_iterator> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
-    *itPair.first += *itPair.second + covariance(*itPair.first, *itPair.second) + covariance(*itPair.second, *itPair.first);
+  for(pair<vector<Hist>::iterator, vector<MatrixXd>::const_iterator> itPair(histograms.begin(), matrices.begin()); itPair.first != histograms.end() && itPair.second != matrices.end(); ++itPair.first, ++itPair.second)
+    itPair.first->setErrorsFrom(*itPair.second);//if they are covariance matrices, once the matrices have been properly summed, set the errors on the histograms from them
   
   return *this;
 

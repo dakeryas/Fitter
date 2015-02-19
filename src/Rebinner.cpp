@@ -81,12 +81,11 @@ void Rebinner::rebinMatrix(MatrixXd& matrix, const vector<double>& edgeForMatrix
   
   vector<unsigned> commonIndices = getCommonIndices(edgeForMatrix, edge);
 
-  MatrixXd reducedMatrix(commonIndices.size()-1, commonIndices.size()-1);//create a temporary matrix
-  for(unsigned i = 0; i<reducedMatrix.rows(); ++i)
-    for(unsigned j = 0; j<reducedMatrix.cols(); ++j)
-      reducedMatrix(i,j) = matrix.block(commonIndices[i],commonIndices[j],commonIndices[i+1]-commonIndices[i],commonIndices[j+1]-commonIndices[j]).sum();
+  for(unsigned i = 0; i<commonIndices.size() - 1; ++i)
+    for(unsigned j = 0; j<commonIndices.size() - 1; ++j)
+      matrix(i,j) = matrix.block(commonIndices[i],commonIndices[j],commonIndices[i+1]-commonIndices[i],commonIndices[j+1]-commonIndices[j]).sum();
     
-  matrix = reducedMatrix;//replace the old matrix with the rebinned one
+  matrix.conservativeResize(commonIndices.size() -1, commonIndices.size() - 1);//shrink the matrix to fit its actual meaning
 
 }
 
