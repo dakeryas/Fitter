@@ -105,7 +105,6 @@ void Rebinner::rebin(Data& data) const{
     }
     else *itHist = *dynamic_cast<TH1D*>(itHist->Rebin(edge.size()-1, itHist->GetName(), edge.data()));//rebin the Histogram
     
-    itHist->Scale(1/itHist->Integral());//rescale to unit area
     ++itHist;
     
   }

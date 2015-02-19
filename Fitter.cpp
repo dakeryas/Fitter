@@ -5,17 +5,15 @@
 
 void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning& heFraction, const char* outname){
  
-  TCanvas can("can");
-  can.SetGrid();
-  can.SetLogx();
+  Data fakeData = (1/dataToFit.getHistograms().front().Integral())*dataToFit;//rescale the data to fake data with unit area so that the errors match
   
   Exclusion exclusionTwo(2, heFraction);//exclusion object to two sigma for the 8He Fractions to test
   Exclusion exclusionThree(3, heFraction);
   Exclusion exclusionFour(4, heFraction);
   
-  exclusionTwo.buildExclusionGraph(dataToFit, simulations);
-  exclusionThree.buildExclusionGraph(dataToFit, simulations);
-  exclusionFour.buildExclusionGraph(dataToFit, simulations);
+  exclusionTwo.buildExclusionGraph(fakeData, simulations);
+  exclusionThree.buildExclusionGraph(fakeData, simulations);
+  exclusionFour.buildExclusionGraph(fakeData, simulations);
   
   exclusionTwo.makeUpGraph(4);
   exclusionThree.makeUpGraph(2);
@@ -25,6 +23,9 @@ void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning
   TGraph exclusionGraphThree = exclusionThree.getExclusionGraph();
   TGraph exclusionGraphFour = exclusionFour.getExclusionGraph();
 
+  TCanvas can("can");
+  can.SetGrid();
+  can.SetLogx();
   exclusionGraphTwo.Draw("AL");//draw with axis and line to enable exclusions...
   exclusionGraphThree.Draw("same");
   exclusionGraphFour.Draw("same");
