@@ -48,7 +48,7 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   
   std::cout<<min<<"\n";
   std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
-  const double heFraction = min.getSol().front()/min.getSol().back();
+  const double heFraction = min.getSol().front()*simulations.getHistograms().front().Integral()/min.getSol().back()/simulations.getHistograms().back().Integral();//don't forget to take into account the spectra normalisation
   const double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
   std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<"\n";
   
