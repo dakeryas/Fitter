@@ -12,6 +12,10 @@ ostream& operator<<(ostream& output, const Storer& data){
   
 }
 
+Storer::Storer(const path& filePath):filePaths({filePath}){
+
+}
+
 Storer::Storer(const vector<path>& filePaths):filePaths(filePaths){
 
 }
@@ -62,6 +66,18 @@ void Storer::pushFromCan(Data& data, TObject* readObject) const{//reads a key to
   TIter objit(can->GetListOfPrimitives()); //iterator over the contents of the canvas
   while((obj = objit())) pushAsHist(data, obj);
   
+}
+
+void Storer::pushPath(const path& filePath){
+  
+  filePaths.push_back(filePath);
+
+}
+
+void Storer::clear(){
+  
+  filePaths.clear();
+
 }
 
 void Storer::fill(Data& data) const{

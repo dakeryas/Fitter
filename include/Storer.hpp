@@ -20,9 +20,12 @@ class Storer{
   void pushFromCan(Data& data, TObject* read_object) const;//pushes the contents of the TObject into data
 
 public:
+  Storer(const boost::filesystem::path& filePath);//in case you only need to store from one path
   Storer(const std::vector<boost::filesystem::path>& filePaths);
   void setFilePaths(const std::vector<boost::filesystem::path>& filePaths);
   const std::vector<boost::filesystem::path>& getFilePaths() const;
+  void pushPath(const boost::filesystem::path& filePath);
+  void clear();//empties filePaths
   void fill(Data& data) const;//store what can be found in filePaths into data
 
 };
