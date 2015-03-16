@@ -3,11 +3,6 @@
 using namespace std;
 using namespace::Eigen;
 
-using vec_mat_it = vector<MatrixXd>::iterator;
-using vec_mat_cst_it = vector<MatrixXd>::const_iterator;
-using vec_hist_it = vector<Hist>::iterator;
-using vec_hist_cst_it = vector<Hist>::const_iterator;
-
 enum Correlation {independent, correlated};
 MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = independent){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
 
