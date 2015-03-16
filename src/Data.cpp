@@ -56,9 +56,9 @@ Data operator*(double a, Data data){
 
 Data join(Data d1, const Data& d2){
 
-  for(auto it = d2.getHistograms().begin(); it != d2.getHistograms().end(); ++it) d1.pushHist(*it);
+  for(const auto& h : d2.getHistograms()) d1.pushHist(h);
   if(d1.getMatrices().empty() && !d2.getMatrices().empty()) d1.completeWithEmptyMatrices();
-  else for(auto it = d2.getMatrices().begin(); it != d2.getMatrices().end(); ++it) d1.pushMatrix(*it);
+  else for(const auto& m : d2.getMatrices()) d1.pushMatrix(m);
   return d1;
   
 }
@@ -79,13 +79,13 @@ Data::Data(const vector<TH1D>& histograms, const vector<TMatrixD>& matrices):his
 
 Data& Data::operator+=(const Data& other){
   
-  for(pair<vec_mat_it, vec_mat_cst_it> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
+  for(auto itPair = make_pair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
     *itPair.first += *itPair.second + covariance(*itPair.first, *itPair.second) + covariance(*itPair.second, *itPair.first);
   
-  for(pair<vec_hist_it, vec_hist_cst_it> itPair(histograms.begin(), other.histograms.begin()); itPair.first != histograms.end() && itPair.second != other.histograms.end(); ++itPair.first, ++itPair.second)
+  for(auto itPair = make_pair(histograms.begin(), other.histograms.begin()); itPair.first != histograms.end() && itPair.second != other.histograms.end(); ++itPair.first, ++itPair.second)
     *itPair.first += *itPair.second;
   
-  for(pair<vec_hist_it, vec_mat_cst_it> itPair(histograms.begin(), matrices.begin()); itPair.first != histograms.end() && itPair.second != matrices.end(); ++itPair.first, ++itPair.second)
+  for(auto itPair = make_pair(histograms.begin(), matrices.begin()); itPair.first != histograms.end() && itPair.second != matrices.end(); ++itPair.first, ++itPair.second)
     itPair.first->setErrorsFrom(*itPair.second);//if they are covariance matrices, once the matrices have been properly summed, set the errors on the histograms from them
   
   return *this;
