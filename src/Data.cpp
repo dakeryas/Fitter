@@ -3,8 +3,13 @@
 using namespace std;
 using namespace::Eigen;
 
+using vec_mat_it = vector<MatrixXd>::iterator;
+using vec_mat_cst_it = vector<MatrixXd>::const_iterator;
+using vec_hist_it = vector<Hist>::iterator;
+using vec_hist_cst_it = vector<Hist>::const_iterator;
+
 enum Correlation {independent, correlated};
-MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = correlated){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
+MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = independent){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
 
   if(correlation == correlated){
     
@@ -74,13 +79,13 @@ Data::Data(const vector<TH1D>& histograms, const vector<TMatrixD>& matrices):his
 
 Data& Data::operator+=(const Data& other){
   
-  for(pair<vector<MatrixXd>::iterator, vector<MatrixXd>::const_iterator> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
+  for(pair<vec_mat_it, vec_mat_cst_it> itPair(matrices.begin(), other.matrices.begin()); itPair.first != matrices.end() && itPair.second != other.matrices.end(); ++itPair.first, ++itPair.second)
     *itPair.first += *itPair.second + covariance(*itPair.first, *itPair.second) + covariance(*itPair.second, *itPair.first);
   
-  for(pair<vector<Hist>::iterator, vector<Hist>::const_iterator> itPair(histograms.begin(), other.histograms.begin()); itPair.first != histograms.end() && itPair.second != other.histograms.end(); ++itPair.first, ++itPair.second)
+  for(pair<vec_hist_it, vec_hist_cst_it> itPair(histograms.begin(), other.histograms.begin()); itPair.first != histograms.end() && itPair.second != other.histograms.end(); ++itPair.first, ++itPair.second)
     *itPair.first += *itPair.second;
   
-  for(pair<vector<Hist>::iterator, vector<MatrixXd>::const_iterator> itPair(histograms.begin(), matrices.begin()); itPair.first != histograms.end() && itPair.second != matrices.end(); ++itPair.first, ++itPair.second)
+  for(pair<vec_hist_it, vec_mat_cst_it> itPair(histograms.begin(), matrices.begin()); itPair.first != histograms.end() && itPair.second != matrices.end(); ++itPair.first, ++itPair.second)
     itPair.first->setErrorsFrom(*itPair.second);//if they are covariance matrices, once the matrices have been properly summed, set the errors on the histograms from them
   
   return *this;
@@ -89,8 +94,8 @@ Data& Data::operator+=(const Data& other){
 
 Data& Data::operator*=(double a){
   
-  for(auto it = histograms.begin(); it != histograms.end(); ++it) *it *= a;
-  for(auto it = matrices.begin(); it != matrices.end(); ++it) *it *= pow(a,2);//for the covariance matrices be careful to use the square of a
+  for(auto& h : histograms) h *= a;
+  for(auto& m : matrices) m *= pow(a,2);//for the covariance matrices be careful to use the square of a
   
   return *this;
 
