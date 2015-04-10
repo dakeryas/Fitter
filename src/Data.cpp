@@ -3,14 +3,15 @@
 using namespace std;
 using namespace::Eigen;
 
-enum Correlation {independent, correlated};
-MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = independent){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
+enum Correlation {independent, correlated, self};
+MatrixXd covariance(const MatrixXd& m1, const MatrixXd& m2, Correlation correlation = self){//shortcut from real maths: the variables X1 and X2 are represented by their matrices 'm1' and 'm2' to compute Cov(X1, X2)
 
   if(correlation == correlated){
     
     return m1.diagonal().array().sqrt().matrix()*m2.diagonal().array().sqrt().matrix().transpose();//take the square root of the variances to get the sigma's and return sigma1 * sigma2.transpose()
     
   }
+  else if(correlation == self) return m1; //when Cov(X,Y) ~ Var(X) ~ Var(Y)
   else return MatrixXd(m1.cols(), m1.cols()).setZero();
   
 }
