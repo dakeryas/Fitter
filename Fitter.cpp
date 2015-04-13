@@ -48,8 +48,10 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   
   std::cout<<min<<"\n";
   std::cout<<"NDF = "<<dataToFit.getNumberOfBins()-2<<"\n";
-  const double heFraction = min.getSol().front()*simulations.getHistograms().front().Integral()/min.getSol().back()/simulations.getHistograms().back().Integral();//don't forget to take into account the spectra normalisation
-  const double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
+  double numberOfHe = min.getSol().front()/simulations.getHistograms().front().Integral();//the solution need be rescaled with the integral of the shorten histogram
+  double numberOfLi = min.getSol().back()/simulations.getHistograms().back().Integral();
+  double heFraction = numberOfHe/(numberOfHe + numberOfLi);//don't forget to take into account the spectra normalisation
+  double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
   std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<"\n";
   
   std::cout<<"*************************\n"
@@ -58,7 +60,7 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   <<"\n*************************\n";
   
   Hist dataSpectrum = dataToFit.getHistograms().front();
-  Hist simuSpectrum = min.getSol().front()*simulations.getHistograms().front() + min.getSol().back()*simulations.getHistograms().back();
+  Hist simuSpectrum = min.getSol().front()*simulations.getHistograms().front() + min.getSol().back()*simulations.getHistograms().back();//the errors are correctly summed by default as the He and Li spectra are independant
   TCanvas can("can");
   can.cd();
   simuSpectrum.GetYaxis()->SetRangeUser(0, 1.15*dataSpectrum.GetMaximum());
