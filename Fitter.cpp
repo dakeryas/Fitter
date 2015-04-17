@@ -128,7 +128,7 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
   fitFirstToRest(measuresGd, simuGd);
   fitFirstToRest(measuresH, simuH);
   fitFirstToRest(measures, simu);
-  Binning heFracBinning = {5, 2, 20};//steps per percent, starting percent, ending percent
+  Binning heFracBinning = {5, 3, 22};//steps per percent, starting percent, ending percent
   saveExclusion(measures, simu, heFracBinning, "helium_exclusion.root");//number of steps per percent first, then min frac to test, then last frac to test
   
 }
