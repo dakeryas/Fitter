@@ -49,7 +49,7 @@ void Minimiser::Process(){
   err = vector<double>(minuit.Errors(), minuit.Errors()+f.NDim());
   double covarianceArray[sol.size()];
   minuit.GetCovMatrix(covarianceArray);
-  covariance = Map<Matrix<double, Dynamic, Dynamic, RowMajor>>(covarianceArray, sol.size(), sol.size());//the covariance matrix is diagonal anyway, so we don't need to read it as Row Major from the ROOT array
+  covariance = Map<Matrix<double, Dynamic, Dynamic, RowMajor>>(covarianceArray, sol.size(), sol.size());//the covariance matrix is symmetric anyway, so we don't need to read it as Row Major from the ROOT array
   minVal = minuit.MinValue();
   
 }

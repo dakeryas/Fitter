@@ -2,6 +2,7 @@
 #include "Storer.hpp"
 #include "Rebinner.hpp"
 #include "Exclusion.hpp"
+#include "Deviation.hpp"
 
 void saveExclusion(const Data& dataToFit, const Data& simulations, const Binning& heFraction, const char* outname){
  
@@ -51,7 +52,7 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   double numberOfHe = min.getSol().front()/simulations.getHistograms().front().Integral();//the solution need be rescaled with the integral of the shorten histogram
   double numberOfLi = min.getSol().back()/simulations.getHistograms().back().Integral();
   double heFraction = numberOfHe/(numberOfHe + numberOfLi);//don't forget to take into account the spectra normalisation
-  double heFractionErr = heFraction * (min.getErrors().front()/min.getSol().front() + min.getErrors().back()/min.getSol().back());//use relative errors, i.e. df = f (ds1/s1 + ds2/s2)
+  double heFractionErr = Deviation<double, Eigen::MatrixXd>::getForFraction(numberOfHe, numberOfLi, min.getCovariance());
   std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<"\n";
   
   std::cout<<"*************************\n"
