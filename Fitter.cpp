@@ -52,7 +52,7 @@ void saveFitResults(const Minimiser& min, const Chi& chiSquared, const Data& dat
   double numberOfHe = min.getSol().front()/simulations.getHistograms().front().Integral();//the solution need be rescaled with the integral of the shorten histogram
   double numberOfLi = min.getSol().back()/simulations.getHistograms().back().Integral();
   double heFraction = numberOfHe/(numberOfHe + numberOfLi);//don't forget to take into account the spectra normalisation
-  double heFractionErr = Deviation<double, Eigen::MatrixXd>::getForFraction(numberOfHe, numberOfLi, min.getCovariance());
+  double heFractionErr = Deviation::getForFraction(numberOfHe, numberOfLi, min.getCovariance());
   std::cout<<"He fraction = "<<heFraction<<" +/- "<<heFractionErr<<"\n";
   
   std::cout<<"*************************\n"
