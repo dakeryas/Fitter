@@ -92,22 +92,22 @@ void Fitter(const boost::filesystem::path& directory, const std::string& dataSor
 
   Data measuresGd, measuresH, simuGd, simuH;
   
-  PathGrabber pathGrabber;
+  PathGrabber pathGrabber(".root");
   pathGrabber.pushPathsFrom(directory, dataSorterGd);
   Storer storer(pathGrabber.getFilePaths());
   storer.fill(measuresGd);
-  
-  pathGrabber.clear();
+
+  pathGrabber.clearPaths();
   pathGrabber.pushPathsFrom(directory, dataSorterH);
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(measuresH);
   
-  pathGrabber.clear();
+  pathGrabber.clearPaths();
   pathGrabber.pushPathsFrom(directory, simuSorterGd);//retrieve the paths that the contain the ROOT simulation files
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simuGd);//fill the ROOT objects from the paths into 'simu'
-  
-  pathGrabber.clear();
+
+  pathGrabber.clearPaths();
   pathGrabber.pushPathsFrom(directory, simuSorterH);
   storer.setFilePaths(pathGrabber.getFilePaths());
   storer.fill(simuH);
