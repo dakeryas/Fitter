@@ -1,9 +1,8 @@
 #include "PathGrabber.hpp"
 
-using namespace std;
 using namespace boost::filesystem;
 
-ostream& operator<<(ostream& output, const PathGrabber& pathGrabber){
+std::ostream& operator<<(std::ostream& output, const PathGrabber& pathGrabber){
   
   output<<"Grabbed the files:\n";
   for(const path& filep : pathGrabber.getFilePaths()) output<<filep<<"\n";
@@ -11,45 +10,58 @@ ostream& operator<<(ostream& output, const PathGrabber& pathGrabber){
   
 }
 
-bool PathGrabber::pathMatches(const directory_iterator& it, const string& fileSorter){
+PathGrabber::PathGrabber(const std::string& extension):extension(extension){
+
+}
+
+const std::string& PathGrabber::getMatchingExtension() const{
   
-  return it->path().filename().string().find(fileSorter) != string::npos;
+  return extension;
+
+}
+
+void PathGrabber::setMatchingExtension(const std::string& extension){
+  
+  this->extension = extension;
+
+}
+
+bool PathGrabber::pathMatches(directory_iterator it){
+
+  return it->path().filename().string().find(fileSorter) != std::string::npos;
   
 }
 
-void PathGrabber::pushIfRoot(const directory_iterator& it){//fills 'found_paths' with the path pointed to by 'it' if 'it' refers to a file
-  
-  if(is_directory(it->status()) == 0 && pathMatches(it, ".root")) filePaths.push_back(it->path()); ; //find returns the position of 'name' in the path, so if it returned a position indeed(namely not npos), we found something
+void PathGrabber::pushPathsFrom(const path& searchPath){ //retrieves the path of all files in a directory matching 'extension'
+
+  pushPathsFrom(searchPath, "");
   
 }
 
-void PathGrabber::pushIfRootAnd(const directory_iterator& it, const string& fileSorter){//fills 'found_paths' with the path pointed to by 'it' if 'it' refers to a file
-  
-  if(is_directory(it->status()) == 0 && pathMatches(it, ".root") && pathMatches(it, fileSorter)) filePaths.push_back(it->path()); ; //find returns the position of 'name' in the path, so if it returned a position indeed(namely not npos), we found something
-  
-}
+void PathGrabber::pushPathsFrom(const path& searchPath, const std::string& fileSorter){ //retrieves the path of all the files in a directory that match the name fileSorter
 
-void PathGrabber::pushPathsFrom(const path& searchPath){ //retrieves the path of all files in a directory
-
+  this->fileSorter = fileSorter;
+  
   directory_iterator end; //the default constructor creates an end iterator which cannot be reached unless nothing was found
-  for(directory_iterator it(searchPath); it!= end; ++it) pushIfRoot(it);
+  for(directory_iterator it(searchPath); it!= end; ++it){
+
+    if(is_regular_file(it->status()) && (it->path().extension() == extension) && pathMatches(it)){
+      
+      filePaths.push_back(it->path());
+      
+    }
+    
+  }
   
 }
 
-void PathGrabber::pushPathsFrom(const path& searchPath, const string& fileSorter){ //retrieves the path of all the files in a directory that match the name fileSorter
-
-  directory_iterator end; //the default constructor creates an end iterator which cannot be reached unless nothing was found
-  for(directory_iterator it(searchPath); it!= end; ++it) pushIfRootAnd(it, fileSorter);
-  
-}
-
-void PathGrabber::clear(){
+void PathGrabber::clearPaths(){
   
   filePaths.clear();
 
 }
 
-const vector<path>& PathGrabber::getFilePaths() const{
+const std::vector<path>& PathGrabber::getFilePaths() const{
   
   return filePaths;
 
