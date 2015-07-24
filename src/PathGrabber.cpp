@@ -53,6 +53,8 @@ void PathGrabber::pushPathsFrom(const path& searchPath, const std::string& fileS
     
   }
   
+  std::sort(filePaths.begin(), filePaths.end());//sort the paths
+  
 }
 
 void PathGrabber::clearPaths(){
