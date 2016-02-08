@@ -61,7 +61,7 @@ void Minimiser::Update(ROOT::Math::Functor f){
 
 }
 
-void Minimiser::setInitialValues(const vector<double>& variable){
+void Minimiser::setInitialValues(vector<double> variable){
   
   if(this->variable.size() == variable.size()){
     
