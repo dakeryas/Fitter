@@ -1,0 +1,8 @@
+.gitignore
+Fitter
+*.kdev*
+*.kdev4
+*.exe
+*.root
+*.[oad]
+*~
