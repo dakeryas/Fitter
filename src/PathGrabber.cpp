@@ -69,3 +69,9 @@ const std::vector<path>& PathGrabber::getFilePaths() const{
 
 }
 
+bool PathGrabber::foundPaths() const{
+  
+  return !filePaths.empty();
+
+}
+
